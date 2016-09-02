@@ -11,6 +11,64 @@
 #define new DEBUG_NEW
 #endif
 
+//////////////////////////////////////////////////////////////////////////
+
+IStream* LoadImageFromResource(HMODULE hModule, LPCWSTR lpName, LPCWSTR lpType)
+{
+	HRSRC hRC = FindResource(hModule, lpName, lpType);
+	if (hRC == NULL)
+		return NULL;
+
+	HGLOBAL hPkg = LoadResource(NULL, hRC);
+	if (hPkg == NULL)
+		return NULL;
+
+	DWORD dwSize = SizeofResource(NULL, hRC);
+	LPVOID pData = LockResource(hPkg);
+
+	HGLOBAL hImage = GlobalAlloc(GMEM_FIXED, dwSize);
+	LPVOID pImageBuf = GlobalLock(hImage);
+	memcpy(pImageBuf, pData, dwSize);
+	GlobalUnlock(hImage);
+
+	UnlockResource(hPkg);
+
+	IStream *pStream = NULL;
+	CreateStreamOnHGlobal(hImage, TRUE, &pStream);
+
+	return pStream;
+}
+
+HRESULT LoadImageFromResource(CImage &img, HMODULE hModule, LPCWSTR lpName, LPCWSTR lpType)
+{
+	HRSRC hRC = FindResource(hModule, lpName, lpType);
+	if (hRC == NULL)
+		return E_FAIL;
+
+	HGLOBAL hPkg = LoadResource(NULL, hRC);
+	if (hPkg == NULL)
+		return E_FAIL;
+
+	DWORD dwSize = SizeofResource(NULL, hRC);
+	LPVOID pData = LockResource(hPkg);
+
+	HGLOBAL hImage = GlobalAlloc(GMEM_FIXED, dwSize);
+	LPVOID pImageBuf = GlobalLock(hImage);
+	memcpy(pImageBuf, pData, dwSize);
+	GlobalUnlock(hImage);
+
+	UnlockResource(hPkg);
+
+	IStream *pStream = NULL;
+	CreateStreamOnHGlobal(hImage, TRUE, &pStream);
+
+	img.Destroy();
+	HRESULT hRes = img.Load(pStream);
+
+	pStream->Release();
+	return hRes;
+}
+
 
 // CAboutDlg dialog used for App About
 
@@ -64,6 +122,9 @@ BEGIN_MESSAGE_MAP(CTaskListControlDemoDlg, CDialogEx)
 	ON_WM_SYSCOMMAND()
 	ON_WM_PAINT()
 	ON_WM_QUERYDRAGICON()
+	ON_NOTIFY(STXALN_ITEMCLICK, 100, &CTaskListControlDemoDlg::OnListItemClick)
+	ON_NOTIFY(STXALN_ITEMDBLCLICK, 100, &CTaskListControlDemoDlg::OnListItemDblClick)
+	ON_WM_TIMER()
 END_MESSAGE_MAP()
 
 
@@ -99,6 +160,33 @@ BOOL CTaskListControlDemoDlg::OnInitDialog()
 	SetIcon(m_hIcon, FALSE);		// Set small icon
 
 	// TODO: Add extra initialization here
+	srand((unsigned int)time(NULL));
+
+	m_list.Create(_T("ABCDEF"), WS_CHILD | WS_VISIBLE | WS_TABSTOP | WS_BORDER, CRect(0, 0, 240, 360), this, 100);
+
+	CComPtr<IStream> spImage1 = LoadImageFromResource(AfxGetApp()->m_hInstance, MAKEINTRESOURCE(IDB_PNG1), _T("PNG"));
+	CComPtr<IStream> spImage2 = LoadImageFromResource(AfxGetApp()->m_hInstance, MAKEINTRESOURCE(IDB_PNG2), _T("PNG"));
+	CComPtr<IStream> spImage3 = LoadImageFromResource(AfxGetApp()->m_hInstance, MAKEINTRESOURCE(IDB_PNG3), _T("PNG"));
+
+	CString str;
+	for (int i = 0; i < 5; i++)
+	{
+		str.Format(_T("%d"), rand());
+		INT_PTR iItem = m_list.InsertNewItem(0, _T("Group_") + str);
+		m_list.SetItemImage(iItem, spImage2, TRUE);
+		m_list.SetItemImage(iItem, spImage1, FALSE);
+		for (int k = 0; k < rand() % 5; k++)
+		{
+			str.Format(_T("%d"), rand());
+			INT_PTR iSubItem = m_list.InsertNewSubItem(iItem, 0, _T("Item_") + str);
+			m_list.SetSubItemImage(iItem, iSubItem, spImage3);
+		}
+	}
+
+	CComPtr<IStream> spImg = LoadImageFromResource(AfxGetApp()->m_hInstance, MAKEINTRESOURCE(IDB_PNG5), _T("PNG"));
+	m_list.SetBackgroundImage(spImg);
+
+	SetTimer(1, 3000, NULL);
 
 	return TRUE;  // return TRUE  unless you set the focus to a control
 }
@@ -152,3 +240,54 @@ HCURSOR CTaskListControlDemoDlg::OnQueryDragIcon()
 	return static_cast<HCURSOR>(m_hIcon);
 }
 
+
+void CTaskListControlDemoDlg::OnListItemDblClick(NMHDR *pNotifyStructure, LRESULT *pResult)
+{
+
+}
+
+void CTaskListControlDemoDlg::OnListItemClick(NMHDR *pNotifyStructure, LRESULT *pResult)
+{
+	LPNMSTXALITEMCLICK pNM = (LPNMSTXALITEMCLICK)pNotifyStructure;
+	if (pNM->iSubIndex == -1)
+	{
+		if (pNM->bInHeader)
+		{
+			if (m_list.IsItemExpanded(pNM->iIndex))
+				m_list.ExpandItem(pNM->iIndex, FALSE);
+			else
+				m_list.ExpandItem(pNM->iIndex, TRUE);
+		}
+	}
+	else
+	{
+		CString str;
+		str.Format(_T("Item_%d"), rand());
+
+		m_list.SetSubItemCaption(pNM->iIndex, pNM->iSubIndex, str);
+	}
+}
+
+void CTaskListControlDemoDlg::OnTimer(UINT_PTR nIDEvent)
+{
+	if (nIDEvent == 1)
+	{
+		CString str;
+		str.Format(_T("NewItem_%d"), rand());
+
+		int random = rand();
+		int itemIndex = random % m_list.GetItemCount();
+		INT_PTR subItemIndex = m_list.InsertNewSubItem(itemIndex, 0, str);
+
+		if (random % 3 == 0)
+		{
+			CComPtr<IStream> spImg = LoadImageFromResource(AfxGetApp()->m_hInstance, MAKEINTRESOURCE(IDB_PNG6), _T("PNG"));
+			m_list.AddSubItemButton(itemIndex, subItemIndex, spImg, _T("More..."));
+		}
+
+		CComPtr<IStream> spImage3 = LoadImageFromResource(AfxGetApp()->m_hInstance, MAKEINTRESOURCE(IDB_PNG3), _T("PNG"));
+		m_list.SetSubItemImage(itemIndex, subItemIndex, spImage3);
+	}
+
+	CDialogEx::OnTimer(nIDEvent);
+}

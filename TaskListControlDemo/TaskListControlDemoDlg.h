@@ -3,6 +3,7 @@
 //
 
 #pragma once
+#include "STXListControlEx.h"
 
 
 // CTaskListControlDemoDlg dialog
@@ -24,6 +25,7 @@ public:
 // Implementation
 protected:
 	HICON m_hIcon;
+	CSTXListControlEx m_list;
 
 	// Generated message map functions
 	virtual BOOL OnInitDialog();
@@ -31,4 +33,9 @@ protected:
 	afx_msg void OnPaint();
 	afx_msg HCURSOR OnQueryDragIcon();
 	DECLARE_MESSAGE_MAP()
+
+public:
+	afx_msg void OnListItemClick(NMHDR *pNotifyStructure, LRESULT *pResult);
+	afx_msg void OnListItemDblClick(NMHDR *pNotifyStructure, LRESULT *pResult);
+	afx_msg void OnTimer(UINT_PTR nIDEvent);
 };

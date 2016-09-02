@@ -187,6 +187,8 @@
   <ItemGroup>
     <ClInclude Include="Resource.h" />
     <ClInclude Include="stdafx.h" />
+    <ClInclude Include="STXListControlEx.h" />
+    <ClInclude Include="STXSmoothStopValue.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="TaskListControlDemo.h" />
     <ClInclude Include="TaskListControlDemoDlg.h" />
@@ -198,6 +200,8 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="STXListControlEx.cpp" />
+    <ClCompile Include="STXSmoothStopValue.cpp" />
     <ClCompile Include="TaskListControlDemo.cpp" />
     <ClCompile Include="TaskListControlDemoDlg.cpp" />
   </ItemGroup>
@@ -208,9 +212,20 @@
     <None Include="res\TaskListControlDemo.rc2" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="res\ad.png" />
+    <Image Include="res\ar.png" />
+    <Image Include="res\ar_b.png" />
+    <Image Include="res\b.png" />
+    <Image Include="res\b2.png" />
+    <Image Include="res\BK.png" />
     <Image Include="res\TaskListControlDemo.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
+  <ProjectExtensions>
+    <VisualStudio>
+      <UserProperties RESOURCE_FILE="TaskListControlDemo.rc" />
+    </VisualStudio>
+  </ProjectExtensions>
 </Project>

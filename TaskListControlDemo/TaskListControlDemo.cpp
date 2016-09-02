@@ -51,7 +51,12 @@ BOOL CTaskListControlDemoApp::InitInstance()
 
 	CWinApp::InitInstance();
 
+	CoInitialize(NULL);
+	ULONG_PTR m_gdiplusToken = 0;
+	Gdiplus::GdiplusStartupInput gdiplusStartupInput;
+	Gdiplus::GdiplusStartup(&m_gdiplusToken, &gdiplusStartupInput, NULL);
 
+	{
 	// Create the shell manager, in case the dialog contains
 	// any shell tree view or shell list view controls.
 	CShellManager *pShellManager = new CShellManager;
@@ -92,6 +97,11 @@ BOOL CTaskListControlDemoApp::InitInstance()
 	{
 		delete pShellManager;
 	}
+
+	}
+
+	Gdiplus::GdiplusShutdown(m_gdiplusToken);
+	CoUninitialize();
 
 #ifndef _AFXDLL
 	ControlBarCleanUp();
