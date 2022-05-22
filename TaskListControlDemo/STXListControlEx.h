@@ -24,7 +24,7 @@ public:
 
 protected:
 	CString m_strToolTips;		//Not implemented yet
-	std::tr1::shared_ptr<Gdiplus::Image> m_pImgImage;
+	std::shared_ptr<Gdiplus::Image> m_pImgImage;
 	CSTXListControlExItem *m_pParentItem;
 
 	CSTXSmoothStopValue m_iOffset;
@@ -51,8 +51,8 @@ protected:
 	CSTXSmoothStopValue m_iItemOpacity;		//0.0-1.0
 	CSTXSmoothStopValue m_iContentOpacity;	//0.0-1.0
 
-	std::tr1::shared_ptr<Gdiplus::Image> m_pImgImage;
-	std::tr1::shared_ptr<Gdiplus::Image> m_pImgImageCollapse;
+	std::shared_ptr<Gdiplus::Image> m_pImgImage;
+	std::shared_ptr<Gdiplus::Image> m_pImgImageCollapse;
 
 	CSTXSmoothStopValue m_iImageOpacity;			//0.0-1.0
 	CSTXSmoothStopValue m_iHoverMarkOpacity;		//0.0-1.0
@@ -73,10 +73,10 @@ protected:
 protected:
 	CSTXListControlEx *m_pParentAnimationList;
 	CSTXListControlExItem *m_pParentItem;
-	CArray <std::tr1::shared_ptr<CSTXListControlExItem> > m_arrChildItems;
-	CArray <std::tr1::shared_ptr<CSTXListControlExButton> > m_arrButtons;
+	CArray <std::shared_ptr<CSTXListControlExItem> > m_arrChildItems;
+	CArray <std::shared_ptr<CSTXListControlExButton> > m_arrButtons;
 
-	std::queue<std::tr1::shared_ptr<CSTXListControlExItem> > m_queueDeleted;
+	std::queue<std::shared_ptr<CSTXListControlExItem> > m_queueDeleted;
 
 protected:
 	BOOL m_bUseGrayImage;
@@ -86,7 +86,7 @@ protected:
 	CString m_strSubCaption;
 
 protected:
-	std::tr1::shared_ptr<CSTXListControlExButton> GetButton(INT_PTR iButtonIndex);
+	std::shared_ptr<CSTXListControlExButton> GetButton(INT_PTR iButtonIndex);
 	HRESULT DrawItemEx(Gdiplus::Graphics *pGraphics, int iOffsetX, int iOffsetY, int iHeight, int nControlHeight);
 
 //	HRESULT DrawToInternalImage(ID2D1HwndRenderTarget *pHwndRenderTarget);
@@ -108,7 +108,7 @@ public:
 	HRESULT DrawChildren(Gdiplus::Graphics *pGraphics, const CRect &rcItem, int nControlHeight);
 	void UseGrayImage(BOOL bGray);
 
-	INT_PTR InsertNewSubItemCopy( INT_PTR iIndex, std::tr1::shared_ptr<CSTXListControlExItem> pItem );
+	INT_PTR InsertNewSubItemCopy( INT_PTR iIndex, std::shared_ptr<CSTXListControlExItem> pItem );
 	INT_PTR GetSubItemCount();
 
 	CString GetCaption(BOOL bSubCaption = FALSE);
@@ -179,18 +179,18 @@ protected:
 protected:
 
 protected:
-	CArray <std::tr1::shared_ptr<CSTXListControlExItem> > m_arrItems;
+	CArray <std::shared_ptr<CSTXListControlExItem> > m_arrItems;
 
 	CString m_strTextWhenEmpty;
-	std::queue<std::tr1::shared_ptr<CSTXListControlExItem> > m_queueDeleted;
+	std::queue<std::shared_ptr<CSTXListControlExItem> > m_queueDeleted;
 
 protected:
-	std::tr1::shared_ptr<CSTXListControlExItem> m_pLastHoverItem;
-	std::tr1::shared_ptr<CSTXListControlExItem> m_pLastLMouseDownItem;
-	std::tr1::shared_ptr<CSTXListControlExItem> m_pLastRMouseDownItem;
-	std::tr1::shared_ptr<CSTXListControlExButton> m_pLastLMouseDownButton;
+	std::shared_ptr<CSTXListControlExItem> m_pLastHoverItem;
+	std::shared_ptr<CSTXListControlExItem> m_pLastLMouseDownItem;
+	std::shared_ptr<CSTXListControlExItem> m_pLastRMouseDownItem;
+	std::shared_ptr<CSTXListControlExButton> m_pLastLMouseDownButton;
 
-	std::tr1::shared_ptr<CSTXListControlExItem> m_pFocusedItem;
+	std::shared_ptr<CSTXListControlExItem> m_pFocusedItem;
 	INT_PTR m_iFocusItemIndex;
 	INT_PTR m_iFocusSubItemIndex;
 
@@ -206,8 +206,8 @@ protected:
 	CSTXSmoothStopValue m_vImageAndTextSpacing;	//Space between Image area and Text area
 	CSTXSmoothStopValue m_vItemSpacing;			//Space between each item
 
-	std::tr1::shared_ptr<Gdiplus::Image> m_pImgBackground;
-	std::tr1::shared_ptr<Gdiplus::CachedBitmap> m_pImgBackgroundCached;
+	std::shared_ptr<Gdiplus::Image> m_pImgBackground;
+	std::shared_ptr<Gdiplus::CachedBitmap> m_pImgBackgroundCached;
 
 	CSTXSmoothStopValue m_vBackColorRed;			//0.0 - 1.0
 	CSTXSmoothStopValue m_vBackColorGreen;			//0.0 - 1.0
@@ -216,10 +216,10 @@ protected:
 	CSTXSmoothStopValue m_vSubItemLeftSpacing;		//0 -
 
 protected:
-	CArray<std::tr1::shared_ptr<Gdiplus::Image> > m_arrSubMarkImages;
+	CArray<std::shared_ptr<Gdiplus::Image> > m_arrSubMarkImages;
 
-	std::tr1::shared_ptr<Gdiplus::Image> m_pImgBusy;
-	std::tr1::shared_ptr<Gdiplus::Image> m_pImgAway;
+	std::shared_ptr<Gdiplus::Image> m_pImgBusy;
+	std::shared_ptr<Gdiplus::Image> m_pImgAway;
 
 	BOOL m_bGlobalUseGrayImage;
 
@@ -230,21 +230,21 @@ protected:
 	void SetFocusedItem(INT_PTR iItemIndex, INT_PTR iSubItemIndex);
 	void FocusNextItem();
 	void FocusPreviousItem();
-	void InternalEnsureVisible(tr1::shared_ptr<CSTXListControlExItem> pItemEx);
+	void InternalEnsureVisible(shared_ptr<CSTXListControlExItem> pItemEx);
 
 	virtual void ActivateAnimation();
 	virtual void DeactivateAnimation();
 
 public:
-	static std::tr1::shared_ptr<Gdiplus::Image> GetResizedImage(IStream *pStream, int nWidthHeight);
-	static std::tr1::shared_ptr<Gdiplus::Image> GetResizedImage(HBITMAP hBitmap, int nWidthHeight);
-	static std::tr1::shared_ptr<Gdiplus::Image> GetResizedImage(LPCTSTR lpszFile, int nWidthHeight);
-	static std::tr1::shared_ptr<Gdiplus::Image> GetResizedImage(std::tr1::shared_ptr<Gdiplus::Image> pImage, int nWidthHeight);
+	static std::shared_ptr<Gdiplus::Image> GetResizedImage(IStream *pStream, int nWidthHeight);
+	static std::shared_ptr<Gdiplus::Image> GetResizedImage(HBITMAP hBitmap, int nWidthHeight);
+	static std::shared_ptr<Gdiplus::Image> GetResizedImage(LPCTSTR lpszFile, int nWidthHeight);
+	static std::shared_ptr<Gdiplus::Image> GetResizedImage(std::shared_ptr<Gdiplus::Image> pImage, int nWidthHeight);
 
 
 private:
-	std::tr1::shared_ptr<CSTXListControlExItem> DeleteSubItemGetCopy(INT_PTR iItemIndex, INT_PTR iSubItemIndex);
-	INT_PTR InsertNewSubItemCopy(INT_PTR iItemIndex, INT_PTR iSubItemIndex, std::tr1::shared_ptr<CSTXListControlExItem> pItem);
+	std::shared_ptr<CSTXListControlExItem> DeleteSubItemGetCopy(INT_PTR iItemIndex, INT_PTR iSubItemIndex);
+	INT_PTR InsertNewSubItemCopy(INT_PTR iItemIndex, INT_PTR iSubItemIndex, std::shared_ptr<CSTXListControlExItem> pItem);
 
 public:
 	BOOL Create(LPCTSTR lpszWindowName, DWORD dwStyle, const RECT& rect, CWnd* pParentWnd, UINT nID);
@@ -317,7 +317,7 @@ public:
 	void SetSubItemLeftPadding( int nPadding );
 
 protected:
-	virtual void OnBeginDrag(std::tr1::shared_ptr<CSTXListControlExItem> pDragItem);
+	virtual void OnBeginDrag(std::shared_ptr<CSTXListControlExItem> pDragItem);
 	virtual UINT GetTopReservedHeight();
 	virtual void DrawTopReservedSpace(Gdiplus::Graphics *pGraphics);
 	virtual void DrawBackground(Gdiplus::Graphics *pGraphics);

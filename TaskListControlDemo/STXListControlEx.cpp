@@ -115,7 +115,7 @@ HRESULT CSTXListControlExItem::DrawItemEx(Gdiplus::Graphics *pGraphics, int iOff
 
 	Gdiplus::REAL fItemAlpha = (float)m_iItemOpacity.GetValue();
 
-	tr1::shared_ptr<Gdiplus::Image> pImageUsing = m_pImgImage;
+	shared_ptr<Gdiplus::Image> pImageUsing = m_pImgImage;
 	if((!m_bExpand) && m_pImgImageCollapse)
 		pImageUsing = m_pImgImageCollapse;
 
@@ -189,7 +189,7 @@ HRESULT CSTXListControlExItem::DrawItemEx(Gdiplus::Graphics *pGraphics, int iOff
 	for(INT_PTR i=0;i<m_arrButtons.GetCount();i++)
 	{
 		CRect rcButton = rcButtonBase;
-		std::tr1::shared_ptr<CSTXListControlExButton> pButton = m_arrButtons[i];
+		std::shared_ptr<CSTXListControlExButton> pButton = m_arrButtons[i];
 		rcButton.OffsetRect((int)pButton->m_iOffset.GetValue(), 0);
 
 		if(pButton->m_pImgImage)
@@ -241,7 +241,7 @@ INT_PTR CSTXListControlExItem::InsertNewSubItem( INT_PTR iIndex, LPCTSTR lpszCap
 		}
 	}
 
-	std::tr1::shared_ptr<CSTXListControlExItem> pNewItem (new CSTXListControlExItem(m_pParentAnimationList, this, fOffsetTarget));
+	std::shared_ptr<CSTXListControlExItem> pNewItem (new CSTXListControlExItem(m_pParentAnimationList, this, fOffsetTarget));
 
 	if(lpszCaption)
 		pNewItem->m_strCaption = lpszCaption;
@@ -270,13 +270,13 @@ HRESULT CSTXListControlExItem::DrawChildren(Gdiplus::Graphics *pGraphics, const 
 	rectChildItem.OffsetRect(rcItem.left, rcItem.top);
 
 
-	std::queue<std::tr1::shared_ptr<CSTXListControlExItem> > m_queueAllToDraw;
+	std::queue<std::shared_ptr<CSTXListControlExItem> > m_queueAllToDraw;
 
 	//Draw Deleted items
 	size_t nDrawDelete = m_queueDeleted.size();
 	for(size_t i=0;i<nDrawDelete;i++)
 	{
-		std::tr1::shared_ptr<CSTXListControlExItem> pItem = m_queueDeleted.front();
+		std::shared_ptr<CSTXListControlExItem> pItem = m_queueDeleted.front();
 		m_queueDeleted.pop();
 
  		if(pItem->m_iItemOpacity.GetValue() > 0.02f)
@@ -297,8 +297,8 @@ HRESULT CSTXListControlExItem::DrawChildren(Gdiplus::Graphics *pGraphics, const 
 	//for(INT_PTR i=0;i<m_arrChildItems.GetCount();i++)
 	for(size_t i=0;i<nItemToDraw;i++)
 	{
-		//tr1::shared_ptr<CSTXListControlExItem> pItem = m_arrChildItems[i];
-		tr1::shared_ptr<CSTXListControlExItem> pItem = m_queueAllToDraw.front();
+		//shared_ptr<CSTXListControlExItem> pItem = m_arrChildItems[i];
+		shared_ptr<CSTXListControlExItem> pItem = m_queueAllToDraw.front();
 		m_queueAllToDraw.pop();
 
 		// Draw The Image Area
@@ -442,7 +442,7 @@ HRESULT CSTXListControlExItem::DrawChildren(Gdiplus::Graphics *pGraphics, const 
 		for(INT_PTR i=0;i<pItem->m_arrButtons.GetCount();i++)
 		{
 			CRect rcButton = rcButtonBase;
-			std::tr1::shared_ptr<CSTXListControlExButton> pButton = pItem->m_arrButtons[i];
+			std::shared_ptr<CSTXListControlExButton> pButton = pItem->m_arrButtons[i];
 			rcButton.OffsetRect((int)pButton->m_iOffset.GetValue(), 0);
 
 			if(pButton->m_pImgImage)
@@ -487,7 +487,7 @@ INT_PTR CSTXListControlExItem::DeleteSubItem(INT_PTR iSubItemIndex, BOOL bFadeOu
 	// cause the activation count to remain positive forever.
  	if(bFadeOut && m_bExpand)
  	{
- 		std::tr1::shared_ptr<CSTXListControlExItem> pItem = m_arrChildItems[iSubItemIndex];
+ 		std::shared_ptr<CSTXListControlExItem> pItem = m_arrChildItems[iSubItemIndex];
  		m_queueDeleted.push(pItem);
  		pItem->m_iItemOpacity = 0.0f;
 		pItem->m_iItemOpacity.GetValue();
@@ -500,7 +500,7 @@ INT_PTR CSTXListControlExItem::DeleteSubItem(INT_PTR iSubItemIndex, BOOL bFadeOu
 
 void CSTXListControlExItem::GetSubItemRect( INT_PTR iSubItemIndex, LPRECT lpRect )
 {
-	tr1::shared_ptr<CSTXListControlExItem> pSubItem = m_arrChildItems[iSubItemIndex];
+	shared_ptr<CSTXListControlExItem> pSubItem = m_arrChildItems[iSubItemIndex];
 
 	lpRect->top = (int)pSubItem->m_iOffset.GetValue();
 	lpRect->left = (int)pSubItem->m_iLeftPadding.GetValue();
@@ -525,7 +525,7 @@ void CSTXListControlExItem::UpdateVariableTime()
 
 	for(INT_PTR i=0;i<m_arrChildItems.GetCount();i++)
 	{
-		tr1::shared_ptr<CSTXListControlExItem> pItem = m_arrChildItems[i];
+		shared_ptr<CSTXListControlExItem> pItem = m_arrChildItems[i];
 		pItem->UpdateVariableTime();
 	}
 
@@ -536,7 +536,7 @@ void CSTXListControlExItem::UseGrayImage( BOOL bGray )
 	m_bUseGrayImage = bGray;
 }
 
-INT_PTR CSTXListControlExItem::InsertNewSubItemCopy( INT_PTR iIndex, std::tr1::shared_ptr<CSTXListControlExItem> pItem )
+INT_PTR CSTXListControlExItem::InsertNewSubItemCopy( INT_PTR iIndex, std::shared_ptr<CSTXListControlExItem> pItem )
 {
 	if(iIndex < 0 || iIndex > m_arrChildItems.GetCount())
 		return -1;
@@ -567,7 +567,7 @@ INT_PTR CSTXListControlExItem::InsertNewSubItemCopy( INT_PTR iIndex, std::tr1::s
 		}
 	}
 
-	std::tr1::shared_ptr<CSTXListControlExItem> pNewItem = pItem;
+	std::shared_ptr<CSTXListControlExItem> pNewItem = pItem;
 
 
 	//pNewItem->m_iOffset.SetInitialValueAndVelocity(fOffsetInit, 0);
@@ -630,7 +630,7 @@ INT_PTR CSTXListControlExItem::ButtonHitTest( CPoint point )
 
 	for(INT_PTR i=0;i<nCount;i++)
 	{
-		std::tr1::shared_ptr<CSTXListControlExButton> pButton = m_arrButtons[i];
+		std::shared_ptr<CSTXListControlExButton> pButton = m_arrButtons[i];
 		CRect rcButton((int)pButton->m_iOffset.GetValue(), 0, 0, DEFAULT_ITEM_HEIGHT);
 		rcButton.right = rcButton.left + DEFAULT_BUTTON_WIDTH;
 		rcButton.OffsetRect(m_pParentAnimationList->GetItemWidth(), 0);
@@ -642,7 +642,7 @@ INT_PTR CSTXListControlExItem::ButtonHitTest( CPoint point )
 	return -1;
 }
 
-std::tr1::shared_ptr<CSTXListControlExButton> CSTXListControlExItem::GetButton( INT_PTR iButtonIndex )
+std::shared_ptr<CSTXListControlExButton> CSTXListControlExItem::GetButton( INT_PTR iButtonIndex )
 {
 	return m_arrButtons[iButtonIndex];
 }
@@ -804,7 +804,7 @@ void CSTXListControlEx::DrawControl(CDC *pDC)
 			graphics.DrawImage(m_pImgBackground.get(), 0, 0, rcThis.Width(), rcThis.Height());
 
 			Gdiplus::Bitmap *pBitmapSrc = pBitmap;
-			tr1::shared_ptr<Gdiplus::CachedBitmap> imgCached(new Gdiplus::CachedBitmap(pBitmapSrc, pMemGraphics));
+			shared_ptr<Gdiplus::CachedBitmap> imgCached(new Gdiplus::CachedBitmap(pBitmapSrc, pMemGraphics));
 			m_pImgBackgroundCached = imgCached;
 
 			delete pBitmap;
@@ -835,7 +835,7 @@ void CSTXListControlEx::DrawControl(CDC *pDC)
 	size_t nDrawDelete = m_queueDeleted.size();
 	for(size_t i=0;i<nDrawDelete;i++)
 	{
-		std::tr1::shared_ptr<CSTXListControlExItem> pItem = m_queueDeleted.front();
+		std::shared_ptr<CSTXListControlExItem> pItem = m_queueDeleted.front();
 		m_queueDeleted.pop();
 
 		int top = static_cast<int>(floor(pItem->m_iOffset.GetValue() + 0.5));
@@ -912,7 +912,7 @@ void CSTXListControlEx::DrawControl(CDC *pDC)
 	g.ReleaseHDC(pDC->GetSafeHdc());
 }
 
-INT_PTR CSTXListControlEx::InsertNewSubItemCopy(INT_PTR iItemIndex, INT_PTR iSubItemIndex, std::tr1::shared_ptr<CSTXListControlExItem> pSubItem)
+INT_PTR CSTXListControlEx::InsertNewSubItemCopy(INT_PTR iItemIndex, INT_PTR iSubItemIndex, std::shared_ptr<CSTXListControlExItem> pSubItem)
 {
 	if(iItemIndex < 0 || iItemIndex > m_arrItems.GetCount() - 1)
 		return -1;
@@ -952,13 +952,13 @@ INT_PTR CSTXListControlEx::InsertNewSubItem(INT_PTR iItemIndex, INT_PTR iSubItem
 	if(iItemIndex < 0 || iItemIndex > m_arrItems.GetCount() - 1)
 		return -1;
 
-	std::tr1::shared_ptr<CSTXListControlExItem> pItem = m_arrItems[iItemIndex];
+	std::shared_ptr<CSTXListControlExItem> pItem = m_arrItems[iItemIndex];
 
 	INT_PTR iInserted = pItem->InsertNewSubItem(iSubItemIndex, lpszCaption);
 	if(iInserted == -1)
 		return iInserted;
 
-	std::tr1::shared_ptr<CSTXListControlExItem> pSubItem = pItem->m_arrChildItems[iInserted];
+	std::shared_ptr<CSTXListControlExItem> pSubItem = pItem->m_arrChildItems[iInserted];
 	pSubItem->m_iLeftPadding = m_vSubItemLeftSpacing.GetFinalValue();
 
 	FLOAT fExtra = 0.0f;
@@ -970,7 +970,7 @@ INT_PTR CSTXListControlEx::InsertNewSubItem(INT_PTR iItemIndex, INT_PTR iSubItem
 		//Adjust all items after iIndex
 		for(INT_PTR i=iItemIndex + 1;i<m_arrItems.GetCount();i++)
 		{
-			std::tr1::shared_ptr<CSTXListControlExItem> pSubItemAdjust = m_arrItems[i];
+			std::shared_ptr<CSTXListControlExItem> pSubItemAdjust = m_arrItems[i];
 			pSubItemAdjust->m_iOffset = pSubItemAdjust->m_iOffset.GetFinalValue() + DEFAULT_ITEM_HEIGHT + pSubItemAdjust->m_vChildItemSpacing.GetValue() + fExtra;
 		}
 	
@@ -1006,7 +1006,7 @@ INT_PTR CSTXListControlEx::InsertNewItem( INT_PTR iItemIndex, LPCTSTR lpszCaptio
 		int nTotalHeight = GetTopReservedHeight();
 		for(INT_PTR i=0;i<m_arrItems.GetCount();i++)
 		{
-			tr1::shared_ptr<CSTXListControlExItem> pItem = m_arrItems[i];
+			shared_ptr<CSTXListControlExItem> pItem = m_arrItems[i];
 			nTotalHeight += (pItem->GetHeight() + (int)m_vItemSpacing.GetFinalValue());
 		}
 
@@ -1019,7 +1019,7 @@ INT_PTR CSTXListControlEx::InsertNewItem( INT_PTR iItemIndex, LPCTSTR lpszCaptio
 		int nTotalHeight = GetTopReservedHeight();
 		for(INT_PTR i= 0;i<iItemIndex;i++)
 		{
-			tr1::shared_ptr<CSTXListControlExItem> pItem = m_arrItems[i];
+			shared_ptr<CSTXListControlExItem> pItem = m_arrItems[i];
 			nTotalHeight += (pItem->GetHeight() + (int)m_vItemSpacing.GetFinalValue());
 		}
 
@@ -1029,12 +1029,12 @@ INT_PTR CSTXListControlEx::InsertNewItem( INT_PTR iItemIndex, LPCTSTR lpszCaptio
 		//Adjust all the offsets after this item
 		for(INT_PTR i=iItemIndex;i<m_arrItems.GetCount();i++)
 		{
-			tr1::shared_ptr<CSTXListControlExItem> pItem = m_arrItems[i];
+			shared_ptr<CSTXListControlExItem> pItem = m_arrItems[i];
 			pItem->m_iOffset = pItem->m_iOffset.GetFinalValue() + DEFAULT_HEADER_HEIGHT + m_vItemSpacing.GetFinalValue();
 		}
 	}
 
-	std::tr1::shared_ptr<CSTXListControlExItem> pNewItem (new CSTXListControlExItem(this, NULL, fOffsetInit));
+	std::shared_ptr<CSTXListControlExItem> pNewItem (new CSTXListControlExItem(this, NULL, fOffsetInit));
 
 	if(lpszCaption)
 		pNewItem->m_strCaption = lpszCaption;
@@ -1081,14 +1081,14 @@ INT_PTR CSTXListControlEx::DeleteItem( INT_PTR iItemIndex )
 
 	DOUBLE fImageHeight = rcThis.Height() - m_vTopSpacing.GetValue() - m_vBottomSpacing.GetValue();
 
-	tr1::shared_ptr<CSTXListControlExItem> pItemToDelete = m_arrItems[iItemIndex];
+	shared_ptr<CSTXListControlExItem> pItemToDelete = m_arrItems[iItemIndex];
 
 	int iCurrentPos = (int)pItemToDelete->m_iOffset.GetFinalValue();
 
 	//Adjust all the offsets after this item
 	for(INT_PTR i=iItemIndex + 1;i<m_arrItems.GetCount();i++)
 	{
-		tr1::shared_ptr<CSTXListControlExItem> pItem = m_arrItems[i];
+		shared_ptr<CSTXListControlExItem> pItem = m_arrItems[i];
 		pItem->m_iOffset = iCurrentPos;
 		iCurrentPos += (int)(pItem->GetHeight() + m_vItemSpacing.GetFinalValue());
 	}
@@ -1114,30 +1114,30 @@ INT_PTR CSTXListControlEx::DeleteItem( INT_PTR iItemIndex )
 
 INT_PTR CSTXListControlEx::MoveSubItemToEnd(INT_PTR iItemIndex, INT_PTR iSubItemIndex)
 {
-	std::tr1::shared_ptr<CSTXListControlExItem> pItem = m_arrItems[iItemIndex];
-	tr1::shared_ptr<CSTXListControlExItem> pSubItem = DeleteSubItemGetCopy(iItemIndex, iSubItemIndex);
+	std::shared_ptr<CSTXListControlExItem> pItem = m_arrItems[iItemIndex];
+	shared_ptr<CSTXListControlExItem> pSubItem = DeleteSubItemGetCopy(iItemIndex, iSubItemIndex);
 	return InsertNewSubItemCopy(iItemIndex, pItem->m_arrChildItems.GetCount(), pSubItem);
 }
 
 INT_PTR CSTXListControlEx::MoveSubItemToBegin(INT_PTR iItemIndex, INT_PTR iSubItemIndex)
 {
-	std::tr1::shared_ptr<CSTXListControlExItem> pItem = m_arrItems[iItemIndex];
-	tr1::shared_ptr<CSTXListControlExItem> pSubItem = DeleteSubItemGetCopy(iItemIndex, iSubItemIndex);
+	std::shared_ptr<CSTXListControlExItem> pItem = m_arrItems[iItemIndex];
+	shared_ptr<CSTXListControlExItem> pSubItem = DeleteSubItemGetCopy(iItemIndex, iSubItemIndex);
 	return InsertNewSubItemCopy(iItemIndex, 0, pSubItem);
 }
 
-std::tr1::shared_ptr<CSTXListControlExItem> CSTXListControlEx::DeleteSubItemGetCopy(INT_PTR iItemIndex, INT_PTR iSubItemIndex)
+std::shared_ptr<CSTXListControlExItem> CSTXListControlEx::DeleteSubItemGetCopy(INT_PTR iItemIndex, INT_PTR iSubItemIndex)
 {
 	if(iItemIndex < 0 || iItemIndex > m_arrItems.GetCount() - 1)
-		return std::tr1::shared_ptr<CSTXListControlExItem>();
+		return std::shared_ptr<CSTXListControlExItem>();
 
-	tr1::shared_ptr<CSTXListControlExItem> pItem = m_arrItems[iItemIndex];
+	shared_ptr<CSTXListControlExItem> pItem = m_arrItems[iItemIndex];
 
 	int nCount = pItem->m_arrChildItems.GetCount();
 	if(iSubItemIndex < 0 || iSubItemIndex > nCount - 1)
-		return std::tr1::shared_ptr<CSTXListControlExItem>();
+		return std::shared_ptr<CSTXListControlExItem>();
 
-	tr1::shared_ptr<CSTXListControlExItem> pSubItem = pItem->m_arrChildItems[iSubItemIndex];
+	shared_ptr<CSTXListControlExItem> pSubItem = pItem->m_arrChildItems[iSubItemIndex];
 
 	INT_PTR iDelete = pItem->DeleteSubItem(iSubItemIndex, FALSE);
 
@@ -1150,7 +1150,7 @@ std::tr1::shared_ptr<CSTXListControlExItem> CSTXListControlEx::DeleteSubItemGetC
 		//Adjust all items after iIndex
 		for(INT_PTR i=iItemIndex + 1;i<m_arrItems.GetCount();i++)
 		{
-			tr1::shared_ptr<CSTXListControlExItem> pItem = m_arrItems[i];
+			shared_ptr<CSTXListControlExItem> pItem = m_arrItems[i];
 			pItem->m_iOffset = pItem->m_iOffset.GetFinalValue() - (DEFAULT_ITEM_HEIGHT + pItem->m_vChildItemSpacing.GetValue()) - iExtra;
 		}
 		ResetScrollBars();
@@ -1178,7 +1178,7 @@ INT_PTR CSTXListControlEx::DeleteSubItem( INT_PTR iItemIndex, INT_PTR iSubItemIn
 	if(iItemIndex < 0 || iItemIndex > m_arrItems.GetCount() - 1)
 		return -1;
 
-	tr1::shared_ptr<CSTXListControlExItem> pItem = m_arrItems[iItemIndex];
+	shared_ptr<CSTXListControlExItem> pItem = m_arrItems[iItemIndex];
 	INT_PTR iDelete = pItem->DeleteSubItem(iSubItemIndex, TRUE);
 
 	int iExtra = 0;
@@ -1190,7 +1190,7 @@ INT_PTR CSTXListControlEx::DeleteSubItem( INT_PTR iItemIndex, INT_PTR iSubItemIn
 		//Adjust all items after iIndex
 		for(INT_PTR i=iItemIndex + 1;i<m_arrItems.GetCount();i++)
 		{
-			tr1::shared_ptr<CSTXListControlExItem> pItem = m_arrItems[i];
+			shared_ptr<CSTXListControlExItem> pItem = m_arrItems[i];
 			pItem->m_iOffset = pItem->m_iOffset.GetFinalValue() - (DEFAULT_ITEM_HEIGHT + pItem->m_vChildItemSpacing.GetValue()) - iExtra;
 		}
 		ResetScrollBars();
@@ -1224,7 +1224,7 @@ DWORD_PTR CSTXListControlEx::GetItemData( INT_PTR iItemIndex )
 	if(iItemIndex < 0 || iItemIndex > m_arrItems.GetCount() - 1)
 		return 0;
 
-	tr1::shared_ptr<CSTXListControlExItem> pItem = m_arrItems[iItemIndex];
+	shared_ptr<CSTXListControlExItem> pItem = m_arrItems[iItemIndex];
 	return pItem->m_dwItemData;
 }
 
@@ -1233,7 +1233,7 @@ INT_PTR CSTXListControlEx::SetItemData( INT_PTR iItemIndex, DWORD_PTR dwItemData
 	if(iItemIndex < 0 || iItemIndex > m_arrItems.GetCount() - 1)
 		return -1;
 
-	tr1::shared_ptr<CSTXListControlExItem> pItem = m_arrItems[iItemIndex];
+	shared_ptr<CSTXListControlExItem> pItem = m_arrItems[iItemIndex];
 	pItem->m_dwItemData = dwItemData;
 
 	return iItemIndex;
@@ -1390,7 +1390,7 @@ void CSTXListControlEx::OnSize(UINT nType, int cx, int cy)
 {
 	CWnd::OnSize(nType, cx, cy);
 
-	m_pImgBackgroundCached = std::tr1::shared_ptr<Gdiplus::CachedBitmap>();
+	m_pImgBackgroundCached = std::shared_ptr<Gdiplus::CachedBitmap>();
 	ResetScrollBars();
 	Invalidate();
 }
@@ -1404,7 +1404,7 @@ INT_PTR CSTXListControlEx::ItemHitTest(CPoint point, BOOL *pbInHeader)
 
 	for(INT_PTR i=0;i<m_arrItems.GetCount();i++)
 	{
-		tr1::shared_ptr<CSTXListControlExItem> pItem = m_arrItems[i];
+		shared_ptr<CSTXListControlExItem> pItem = m_arrItems[i];
 		CRect rcItem((int)m_vLeftSpacing.GetValue(), (int)pItem->m_iOffset.GetValue(), 0, 0);
 		rcItem.right = rcItem.left + (int)fItemWidth;
 		rcItem.bottom = rcItem.top + pItem->GetHeight();
@@ -1431,7 +1431,7 @@ INT_PTR CSTXListControlEx::ItemHitTest(CPoint point, BOOL *pbInHeader)
 INT_PTR CSTXListControlEx::SubItemHitTest(INT_PTR iItemIndex, CPoint point)
 {
 	//Convert to Item local axis
-	tr1::shared_ptr<CSTXListControlExItem> pItem = m_arrItems[iItemIndex];
+	shared_ptr<CSTXListControlExItem> pItem = m_arrItems[iItemIndex];
 
 	point.x -= (int)m_vLeftSpacing.GetValue();
 	point.y += GetScrollPos(SB_VERT);
@@ -1464,12 +1464,12 @@ void CSTXListControlEx::OnMouseMove(UINT nFlags, CPoint point)
 	INT_PTR iHit = ItemHitTest(point, &bInHeader);
 	if(iHit != -1)
 	{
-		std::tr1::shared_ptr<CSTXListControlExItem> pHitNow = m_arrItems[iHit];
+		std::shared_ptr<CSTXListControlExItem> pHitNow = m_arrItems[iHit];
 		INT_PTR iHitSubItem = SubItemHitTest(iHit, point);
 		if(iHitSubItem != -1)
 			pHitNow = m_arrItems[iHit]->m_arrChildItems[iHitSubItem];
 		else if(!bInHeader)
-			pHitNow = std::tr1::shared_ptr<CSTXListControlExItem>();
+			pHitNow = std::shared_ptr<CSTXListControlExItem>();
 
 		if(m_ptLButtonDown.x >= 0)
 		{
@@ -1504,7 +1504,7 @@ void CSTXListControlEx::OnMouseMove(UINT nFlags, CPoint point)
 		if(m_pLastHoverItem != NULL)
 		{
 			m_pLastHoverItem->m_iHoverMarkOpacity = 0.0;
-			m_pLastHoverItem = std::tr1::shared_ptr<CSTXListControlExItem>();	//NULL
+			m_pLastHoverItem = std::shared_ptr<CSTXListControlExItem>();	//NULL
 
 
 			Invalidate();
@@ -1521,17 +1521,17 @@ void CSTXListControlEx::OnMouseLeave()
 //	m_bDragging = FALSE;
 
  	if(m_pLastLMouseDownButton != NULL)
- 		m_pLastLMouseDownButton = std::tr1::shared_ptr<CSTXListControlExButton>();	//NULL
+ 		m_pLastLMouseDownButton = std::shared_ptr<CSTXListControlExButton>();	//NULL
 
  	if(m_pLastLMouseDownItem != NULL)
- 		m_pLastLMouseDownItem = std::tr1::shared_ptr<CSTXListControlExItem>();	//NULL
+ 		m_pLastLMouseDownItem = std::shared_ptr<CSTXListControlExItem>();	//NULL
  	if(m_pLastRMouseDownItem != NULL)
- 		m_pLastRMouseDownItem = std::tr1::shared_ptr<CSTXListControlExItem>();	//NULL
+ 		m_pLastRMouseDownItem = std::shared_ptr<CSTXListControlExItem>();	//NULL
 
 	if(m_pLastHoverItem != NULL)
 	{
 		m_pLastHoverItem->m_iHoverMarkOpacity = 0.0;
-		m_pLastHoverItem = std::tr1::shared_ptr<CSTXListControlExItem>();	//NULL
+		m_pLastHoverItem = std::shared_ptr<CSTXListControlExItem>();	//NULL
 
 		Invalidate();
 	}
@@ -1567,7 +1567,7 @@ void CSTXListControlEx::SetFocusedItem(INT_PTR iItemIndex, INT_PTR iSubItemIndex
 	INT_PTR iNewFocusItemIndex = -1;
 	INT_PTR iNewFocusSubItemIndex = -1;
 
-	tr1::shared_ptr<CSTXListControlExItem> pNewFocusItem;
+	shared_ptr<CSTXListControlExItem> pNewFocusItem;
 	if(iItemIndex < 0)
 	{
 		// NULL
@@ -1626,7 +1626,7 @@ void CSTXListControlEx::OnLButtonDown(UINT nFlags, CPoint point)
 	INT_PTR iHit = ItemHitTest(point, &bInHeader);
 	if(iHit != -1)
 	{
-		std::tr1::shared_ptr<CSTXListControlExItem> pHitNow = m_arrItems[iHit];
+		std::shared_ptr<CSTXListControlExItem> pHitNow = m_arrItems[iHit];
 		INT_PTR iHitSubItem = SubItemHitTest(iHit, point);
 		if(iHitSubItem != -1)
 			pHitNow = m_arrItems[iHit]->m_arrChildItems[iHitSubItem];
@@ -1656,7 +1656,7 @@ void CSTXListControlEx::OnLButtonDown(UINT nFlags, CPoint point)
 			INT_PTR iBtnHit = pHitNow->ButtonHitTest(ptInItem);
 			if(iBtnHit != -1)
 			{
-				std::tr1::shared_ptr<CSTXListControlExButton> pBtnHit = pHitNow->GetButton(iBtnHit);
+				std::shared_ptr<CSTXListControlExButton> pBtnHit = pHitNow->GetButton(iBtnHit);
 				m_pLastLMouseDownButton = pBtnHit;
 			}
 		}
@@ -1676,7 +1676,7 @@ void CSTXListControlEx::OnLButtonUp(UINT nFlags, CPoint point)
 	INT_PTR iHit = ItemHitTest(point, &bInHeader);
 	if(iHit != -1)
 	{
-		std::tr1::shared_ptr<CSTXListControlExItem> pHitNow = m_arrItems[iHit];
+		std::shared_ptr<CSTXListControlExItem> pHitNow = m_arrItems[iHit];
 		INT_PTR iHitSubItem = SubItemHitTest(iHit, point);
 		if(iHitSubItem != -1)
 			pHitNow = m_arrItems[iHit]->m_arrChildItems[iHitSubItem];
@@ -1697,7 +1697,7 @@ void CSTXListControlEx::OnLButtonUp(UINT nFlags, CPoint point)
 			INT_PTR iBtnHit = pHitNow->ButtonHitTest(ptInItem);
 			if(iBtnHit != -1)
 			{
-				std::tr1::shared_ptr<CSTXListControlExButton> pBtnHit = pHitNow->GetButton(iBtnHit);
+				std::shared_ptr<CSTXListControlExButton> pBtnHit = pHitNow->GetButton(iBtnHit);
 				if(pBtnHit == m_pLastLMouseDownButton)
 				{
 					//Trigger Mouse Click Event
@@ -1715,7 +1715,7 @@ void CSTXListControlEx::OnLButtonUp(UINT nFlags, CPoint point)
 				}
 			}
 		}
-		m_pLastLMouseDownButton = std::tr1::shared_ptr<CSTXListControlExButton>();	//NULL
+		m_pLastLMouseDownButton = std::shared_ptr<CSTXListControlExButton>();	//NULL
 
 		if(m_pLastLMouseDownItem == pHitNow && bProcessItemClickEvent)
 		{
@@ -1735,7 +1735,7 @@ void CSTXListControlEx::OnLButtonUp(UINT nFlags, CPoint point)
 			//CSTXAnimationManager::ScheduleAnimation();
 			//Invalidate();
 		}
-		m_pLastLMouseDownItem = std::tr1::shared_ptr<CSTXListControlExItem>();	//NULL
+		m_pLastLMouseDownItem = std::shared_ptr<CSTXListControlExItem>();	//NULL
 	}
 	else
 	{
@@ -1757,7 +1757,7 @@ CString CSTXListControlEx::GetSubItemCaption( INT_PTR iItemIndex, INT_PTR iSubIt
 	if(iItemIndex < 0 || iItemIndex > m_arrItems.GetCount() - 1)
 		return CString(_T(""));
 
-	tr1::shared_ptr<CSTXListControlExItem> pItem = m_arrItems[iItemIndex];
+	shared_ptr<CSTXListControlExItem> pItem = m_arrItems[iItemIndex];
 
 	if(iSubItemIndex < 0 || iSubItemIndex > pItem->m_arrChildItems.GetCount() - 1)
 		return CString(_T(""));
@@ -1773,7 +1773,7 @@ CString CSTXListControlEx::GetItemCaption( INT_PTR iItemIndex, BOOL bSubCaption 
 	if(iItemIndex < 0 || iItemIndex > m_arrItems.GetCount() - 1)
 		return CString(_T(""));
 
-	tr1::shared_ptr<CSTXListControlExItem> pItem = m_arrItems[iItemIndex];
+	shared_ptr<CSTXListControlExItem> pItem = m_arrItems[iItemIndex];
 
 	if(bSubCaption)
 		return pItem->m_strSubCaption;
@@ -1790,7 +1790,7 @@ void CSTXListControlEx::OnRButtonDown(UINT nFlags, CPoint point)
 	INT_PTR iHit = ItemHitTest(point, &bInHeader);
 	if(iHit != -1)
 	{
-		std::tr1::shared_ptr<CSTXListControlExItem> pHitNow = m_arrItems[iHit];
+		std::shared_ptr<CSTXListControlExItem> pHitNow = m_arrItems[iHit];
 		INT_PTR iHitSubItem = SubItemHitTest(iHit, point);
 		if(iHitSubItem != -1)
 			pHitNow = m_arrItems[iHit]->m_arrChildItems[iHitSubItem];
@@ -1813,7 +1813,7 @@ void CSTXListControlEx::OnRButtonUp(UINT nFlags, CPoint point)
 	INT_PTR iHit = ItemHitTest(point, &bInHeader);
 	if(iHit != -1)
 	{
-		std::tr1::shared_ptr<CSTXListControlExItem> pHitNow = m_arrItems[iHit];
+		std::shared_ptr<CSTXListControlExItem> pHitNow = m_arrItems[iHit];
 		INT_PTR iHitSubItem = SubItemHitTest(iHit, point);
 		if(iHitSubItem != -1)
 			pHitNow = m_arrItems[iHit]->m_arrChildItems[iHitSubItem];
@@ -1837,7 +1837,7 @@ void CSTXListControlEx::OnRButtonUp(UINT nFlags, CPoint point)
 			//CSTXAnimationManager::ScheduleAnimation();
 			//Invalidate();
 		}
-		m_pLastRMouseDownItem = std::tr1::shared_ptr<CSTXListControlExItem>();	//NULL
+		m_pLastRMouseDownItem = std::shared_ptr<CSTXListControlExItem>();	//NULL
 	}
 	else
 	{
@@ -1859,7 +1859,7 @@ void CSTXListControlEx::ExpandItem(INT_PTR iItemIndex, BOOL bExpand)
 	if(iItemIndex < 0 || iItemIndex > m_arrItems.GetCount() - 1)
 		return;
 
-	tr1::shared_ptr<CSTXListControlExItem> pItem = m_arrItems[iItemIndex];
+	shared_ptr<CSTXListControlExItem> pItem = m_arrItems[iItemIndex];
 	BOOL bOldExpand = pItem->m_bExpand;
 	if(bOldExpand != bExpand)
 	{
@@ -1902,7 +1902,7 @@ BOOL CSTXListControlEx::IsItemExpanded( INT_PTR iItemIndex )
 	if(iItemIndex < 0 || iItemIndex > m_arrItems.GetCount() - 1)
 		return FALSE;
 
-	tr1::shared_ptr<CSTXListControlExItem> pItem = m_arrItems[iItemIndex];
+	shared_ptr<CSTXListControlExItem> pItem = m_arrItems[iItemIndex];
 	return pItem->m_bExpand;
 }
 
@@ -1915,7 +1915,7 @@ HRESULT CSTXListControlEx::SetItemImage(INT_PTR iItemIndex, LPCTSTR lpszFile, BO
 
 	HRESULT hr = S_OK;
 	
-	std::tr1::shared_ptr<Gdiplus::Image> *pImageToLoad = NULL;
+	std::shared_ptr<Gdiplus::Image> *pImageToLoad = NULL;
 	if(bExpanded)
 	{
 		pImageToLoad = &pItem->m_pImgImage;
@@ -1925,8 +1925,8 @@ HRESULT CSTXListControlEx::SetItemImage(INT_PTR iItemIndex, LPCTSTR lpszFile, BO
 		pImageToLoad = &pItem->m_pImgImageCollapse;
 	}
 
-	*pImageToLoad = std::tr1::shared_ptr<Gdiplus::Image>();	//NULL
-	tr1::shared_ptr<Gdiplus::Image> img(new Gdiplus::Image(lpszFile));
+	*pImageToLoad = std::shared_ptr<Gdiplus::Image>();	//NULL
+	shared_ptr<Gdiplus::Image> img(new Gdiplus::Image(lpszFile));
 	*pImageToLoad = img;
 
 
@@ -1946,7 +1946,7 @@ HRESULT CSTXListControlEx::SetItemImage( INT_PTR iItemIndex, HBITMAP hBitmap, BO
 
 	HRESULT hr = S_OK;
 
-	std::tr1::shared_ptr<Gdiplus::Image> *pImageToLoad = NULL;
+	std::shared_ptr<Gdiplus::Image> *pImageToLoad = NULL;
 	if(bExpanded)
 	{
 		pImageToLoad = &pItem->m_pImgImage;
@@ -1955,8 +1955,8 @@ HRESULT CSTXListControlEx::SetItemImage( INT_PTR iItemIndex, HBITMAP hBitmap, BO
 	{
 		pImageToLoad = &pItem->m_pImgImageCollapse;
 	}
-	*pImageToLoad = std::tr1::shared_ptr<Gdiplus::Image>();	//NULL
-	tr1::shared_ptr<Gdiplus::Image> img(new Gdiplus::Bitmap(hBitmap, NULL));
+	*pImageToLoad = std::shared_ptr<Gdiplus::Image>();	//NULL
+	shared_ptr<Gdiplus::Image> img(new Gdiplus::Bitmap(hBitmap, NULL));
 	*pImageToLoad = img;
 
 	if(SUCCEEDED(hr))
@@ -1974,7 +1974,7 @@ HRESULT CSTXListControlEx::SetItemImage( INT_PTR iItemIndex, IStream *pStream, B
 
 	HRESULT hr = S_OK;
 
-	std::tr1::shared_ptr<Gdiplus::Image> *pImageToLoad = NULL;
+	std::shared_ptr<Gdiplus::Image> *pImageToLoad = NULL;
 	if(bExpanded)
 	{
 		pImageToLoad = &pItem->m_pImgImage;
@@ -1984,7 +1984,7 @@ HRESULT CSTXListControlEx::SetItemImage( INT_PTR iItemIndex, IStream *pStream, B
 		pImageToLoad = &pItem->m_pImgImageCollapse;
 	}
 	int iHeaderHeight = pItem->GetHeaderHeight();
-	tr1::shared_ptr<Gdiplus::Image> img(new Gdiplus::Bitmap(pStream));
+	shared_ptr<Gdiplus::Image> img(new Gdiplus::Bitmap(pStream));
 	UINT o_height = img->GetHeight();
 	UINT o_width = img->GetWidth();
 
@@ -2003,7 +2003,7 @@ HRESULT CSTXListControlEx::SetItemImage( INT_PTR iItemIndex, IStream *pStream, B
 			n_width = static_cast<UINT>(n_height * ratio);
 		}
 
-		tr1::shared_ptr<Gdiplus::Image> imgThumbnail(img->GetThumbnailImage(n_width, n_height));
+		shared_ptr<Gdiplus::Image> imgThumbnail(img->GetThumbnailImage(n_width, n_height));
 		*pImageToLoad = imgThumbnail;
 	}
 	else
@@ -2048,17 +2048,17 @@ HRESULT CSTXListControlEx::SetSubItemImage( INT_PTR iItemIndex, INT_PTR iSubItem
 	if(iItemIndex < 0 || iItemIndex > m_arrItems.GetCount() - 1)
 		return E_FAIL;
 
-	tr1::shared_ptr<CSTXListControlExItem> pItem = m_arrItems[iItemIndex];
+	shared_ptr<CSTXListControlExItem> pItem = m_arrItems[iItemIndex];
 
 	if(iSubItemIndex < 0 || iSubItemIndex > pItem->m_arrChildItems.GetCount() - 1)
 		return E_FAIL;
 
-	tr1::shared_ptr<CSTXListControlExItem> pSubItem = pItem->m_arrChildItems[iSubItemIndex];
+	shared_ptr<CSTXListControlExItem> pSubItem = pItem->m_arrChildItems[iSubItemIndex];
 
 	HRESULT hr = S_OK;
 
-	pSubItem->m_pImgImage = std::tr1::shared_ptr<Gdiplus::Image>();	//NULL
-	tr1::shared_ptr<Gdiplus::Image> img(new Gdiplus::Image(lpszFile));
+	pSubItem->m_pImgImage = std::shared_ptr<Gdiplus::Image>();	//NULL
+	shared_ptr<Gdiplus::Image> img(new Gdiplus::Image(lpszFile));
 	pSubItem->m_pImgImage = img;
 
 	if(SUCCEEDED(hr))
@@ -2072,17 +2072,17 @@ HRESULT CSTXListControlEx::SetSubItemImage( INT_PTR iItemIndex, INT_PTR iSubItem
 	if(iItemIndex < 0 || iItemIndex > m_arrItems.GetCount() - 1)
 		return E_FAIL;
 
-	tr1::shared_ptr<CSTXListControlExItem> pItem = m_arrItems[iItemIndex];
+	shared_ptr<CSTXListControlExItem> pItem = m_arrItems[iItemIndex];
 
 	if(iSubItemIndex < 0 || iSubItemIndex > pItem->m_arrChildItems.GetCount() - 1)
 		return E_FAIL;
 
-	tr1::shared_ptr<CSTXListControlExItem> pSubItem = pItem->m_arrChildItems[iSubItemIndex];
+	shared_ptr<CSTXListControlExItem> pSubItem = pItem->m_arrChildItems[iSubItemIndex];
 
 	HRESULT hr = S_OK;
 
-	pSubItem->m_pImgImage = std::tr1::shared_ptr<Gdiplus::Image>();	//NULL
-	tr1::shared_ptr<Gdiplus::Image> img(new Gdiplus::Bitmap(hBitmap, NULL));
+	pSubItem->m_pImgImage = std::shared_ptr<Gdiplus::Image>();	//NULL
+	shared_ptr<Gdiplus::Image> img(new Gdiplus::Bitmap(hBitmap, NULL));
 	pSubItem->m_pImgImage = img;
 
 	if(SUCCEEDED(hr))
@@ -2096,12 +2096,12 @@ INT_PTR CSTXListControlEx::SetSubItemTag1(INT_PTR iItemIndex, INT_PTR iSubItemIn
 	if(iItemIndex < 0 || iItemIndex > m_arrItems.GetCount() - 1)
 		return -1;
 
-	tr1::shared_ptr<CSTXListControlExItem> pItem = m_arrItems[iItemIndex];
+	shared_ptr<CSTXListControlExItem> pItem = m_arrItems[iItemIndex];
 
 	if(iSubItemIndex < 0 || iSubItemIndex > pItem->m_arrChildItems.GetCount() - 1)
 		return -1;
 
-	tr1::shared_ptr<CSTXListControlExItem> pSubItem = pItem->m_arrChildItems[iSubItemIndex];
+	shared_ptr<CSTXListControlExItem> pSubItem = pItem->m_arrChildItems[iSubItemIndex];
 	pSubItem->m_strTag1 = lpszTag;
 	return iSubItemIndex;
 }
@@ -2111,12 +2111,12 @@ INT_PTR CSTXListControlEx::SetSubItemTag2(INT_PTR iItemIndex, INT_PTR iSubItemIn
 	if(iItemIndex < 0 || iItemIndex > m_arrItems.GetCount() - 1)
 		return -1;
 
-	tr1::shared_ptr<CSTXListControlExItem> pItem = m_arrItems[iItemIndex];
+	shared_ptr<CSTXListControlExItem> pItem = m_arrItems[iItemIndex];
 
 	if(iSubItemIndex < 0 || iSubItemIndex > pItem->m_arrChildItems.GetCount() - 1)
 		return -1;
 
-	tr1::shared_ptr<CSTXListControlExItem> pSubItem = pItem->m_arrChildItems[iSubItemIndex];
+	shared_ptr<CSTXListControlExItem> pSubItem = pItem->m_arrChildItems[iSubItemIndex];
 	pSubItem->m_strTag2 = lpszTag;
 	return iSubItemIndex;
 }
@@ -2126,12 +2126,12 @@ CString CSTXListControlEx::GetSubItemTag1(INT_PTR iItemIndex, INT_PTR iSubItemIn
 	if(iItemIndex < 0 || iItemIndex > m_arrItems.GetCount() - 1)
 		return _T("");
 
-	tr1::shared_ptr<CSTXListControlExItem> pItem = m_arrItems[iItemIndex];
+	shared_ptr<CSTXListControlExItem> pItem = m_arrItems[iItemIndex];
 
 	if(iSubItemIndex < 0 || iSubItemIndex > pItem->m_arrChildItems.GetCount() - 1)
 		return _T("");
 
-	tr1::shared_ptr<CSTXListControlExItem> pSubItem = pItem->m_arrChildItems[iSubItemIndex];
+	shared_ptr<CSTXListControlExItem> pSubItem = pItem->m_arrChildItems[iSubItemIndex];
 	return pSubItem->m_strTag1;
 }
 
@@ -2140,12 +2140,12 @@ CString CSTXListControlEx::GetSubItemTag2(INT_PTR iItemIndex, INT_PTR iSubItemIn
 	if(iItemIndex < 0 || iItemIndex > m_arrItems.GetCount() - 1)
 		return _T("");
 
-	tr1::shared_ptr<CSTXListControlExItem> pItem = m_arrItems[iItemIndex];
+	shared_ptr<CSTXListControlExItem> pItem = m_arrItems[iItemIndex];
 
 	if(iSubItemIndex < 0 || iSubItemIndex > pItem->m_arrChildItems.GetCount() - 1)
 		return _T("");
 
-	tr1::shared_ptr<CSTXListControlExItem> pSubItem = pItem->m_arrChildItems[iSubItemIndex];
+	shared_ptr<CSTXListControlExItem> pSubItem = pItem->m_arrChildItems[iSubItemIndex];
 	return pSubItem->m_strTag2;
 }
 
@@ -2155,12 +2155,12 @@ INT_PTR CSTXListControlEx::FindSubItemWithTag1(INT_PTR *pItemIndex, INT_PTR *pSu
 	{
 		for(INT_PTR i=0;i<m_arrItems.GetCount();i++)
 		{
-			tr1::shared_ptr<CSTXListControlExItem> pItem = m_arrItems[i];
+			shared_ptr<CSTXListControlExItem> pItem = m_arrItems[i];
 			if(pItem->m_bExcludeFromFindSubItem)
 				continue;
 			for(INT_PTR k=0;k<pItem->m_arrChildItems.GetCount();k++)
 			{
-				tr1::shared_ptr<CSTXListControlExItem> pSubItem = pItem->m_arrChildItems[k];
+				shared_ptr<CSTXListControlExItem> pSubItem = pItem->m_arrChildItems[k];
 				if(_tcscmp(pSubItem->m_strTag1, lpszTag) == 0)
 				{
 					if(pItemIndex)
@@ -2176,12 +2176,12 @@ INT_PTR CSTXListControlEx::FindSubItemWithTag1(INT_PTR *pItemIndex, INT_PTR *pSu
 	{
 		for(INT_PTR i=0;i<m_arrItems.GetCount();i++)
 		{
-			tr1::shared_ptr<CSTXListControlExItem> pItem = m_arrItems[i];
+			shared_ptr<CSTXListControlExItem> pItem = m_arrItems[i];
 			if(pItem->m_bExcludeFromFindSubItem)
 				continue;
 			for(INT_PTR k=0;k<pItem->m_arrChildItems.GetCount();k++)
 			{
-				tr1::shared_ptr<CSTXListControlExItem> pSubItem = pItem->m_arrChildItems[k];
+				shared_ptr<CSTXListControlExItem> pSubItem = pItem->m_arrChildItems[k];
 				if(_tcsicmp(pSubItem->m_strTag1, lpszTag) == 0)
 				{
 					if(pItemIndex)
@@ -2206,11 +2206,11 @@ INT_PTR CSTXListControlEx::FindSubItemWithTag1(INT_PTR iItemIndex, INT_PTR *pSub
 	if(iItemIndex < 0 || iItemIndex > m_arrItems.GetCount() - 1)
 		return -1;
 
-	tr1::shared_ptr<CSTXListControlExItem> pItem = m_arrItems[iItemIndex];
+	shared_ptr<CSTXListControlExItem> pItem = m_arrItems[iItemIndex];
 
 	for(INT_PTR k=0;k<pItem->m_arrChildItems.GetCount();k++)
 	{
-		tr1::shared_ptr<CSTXListControlExItem> pSubItem = pItem->m_arrChildItems[k];
+		shared_ptr<CSTXListControlExItem> pSubItem = pItem->m_arrChildItems[k];
 		if(_tcscmp(pSubItem->m_strTag1, lpszTag) == 0)
 		{
 			if(pSubItemIndex)
@@ -2230,11 +2230,11 @@ INT_PTR CSTXListControlEx::FindSubItemWithTag2(INT_PTR iItemIndex, INT_PTR *pSub
 	if(iItemIndex < 0 || iItemIndex > m_arrItems.GetCount() - 1)
 		return -1;
 
-	tr1::shared_ptr<CSTXListControlExItem> pItem = m_arrItems[iItemIndex];
+	shared_ptr<CSTXListControlExItem> pItem = m_arrItems[iItemIndex];
 
 	for(INT_PTR k=0;k<pItem->m_arrChildItems.GetCount();k++)
 	{
-		tr1::shared_ptr<CSTXListControlExItem> pSubItem = pItem->m_arrChildItems[k];
+		shared_ptr<CSTXListControlExItem> pSubItem = pItem->m_arrChildItems[k];
 		if(_tcscmp(pSubItem->m_strTag2, lpszTag) == 0)
 		{
 			if(pSubItemIndex)
@@ -2255,12 +2255,12 @@ INT_PTR CSTXListControlEx::FindSubItemWithTag2(INT_PTR *pItemIndex, INT_PTR *pSu
 	{
 		for(INT_PTR i=0;i<m_arrItems.GetCount();i++)
 		{
-			tr1::shared_ptr<CSTXListControlExItem> pItem = m_arrItems[i];
+			shared_ptr<CSTXListControlExItem> pItem = m_arrItems[i];
 			if(pItem->m_bExcludeFromFindSubItem)
 				continue;
 			for(INT_PTR k=0;k<pItem->m_arrChildItems.GetCount();k++)
 			{
-				tr1::shared_ptr<CSTXListControlExItem> pSubItem = pItem->m_arrChildItems[k];
+				shared_ptr<CSTXListControlExItem> pSubItem = pItem->m_arrChildItems[k];
 				if(_tcscmp(pSubItem->m_strTag2, lpszTag) == 0)
 				{
 					if(pItemIndex)
@@ -2276,12 +2276,12 @@ INT_PTR CSTXListControlEx::FindSubItemWithTag2(INT_PTR *pItemIndex, INT_PTR *pSu
 	{
 		for(INT_PTR i=0;i<m_arrItems.GetCount();i++)
 		{
-			tr1::shared_ptr<CSTXListControlExItem> pItem = m_arrItems[i];
+			shared_ptr<CSTXListControlExItem> pItem = m_arrItems[i];
 			if(pItem->m_bExcludeFromFindSubItem)
 				continue;
 			for(INT_PTR k=0;k<pItem->m_arrChildItems.GetCount();k++)
 			{
-				tr1::shared_ptr<CSTXListControlExItem> pSubItem = pItem->m_arrChildItems[k];
+				shared_ptr<CSTXListControlExItem> pSubItem = pItem->m_arrChildItems[k];
 				if(_tcsicmp(pSubItem->m_strTag2, lpszTag) == 0)
 				{
 					if(pItemIndex)
@@ -2308,12 +2308,12 @@ INT_PTR CSTXListControlEx::SetSubItemBusy(INT_PTR iItemIndex, INT_PTR iSubItemIn
 	if(iItemIndex < 0 || iItemIndex > m_arrItems.GetCount() - 1)
 		return -1;
 
-	tr1::shared_ptr<CSTXListControlExItem> pItem = m_arrItems[iItemIndex];
+	shared_ptr<CSTXListControlExItem> pItem = m_arrItems[iItemIndex];
 
 	if(iSubItemIndex < 0 || iSubItemIndex > pItem->m_arrChildItems.GetCount() - 1)
 		return -1;
 
-	tr1::shared_ptr<CSTXListControlExItem> pSubItem = pItem->m_arrChildItems[iSubItemIndex];
+	shared_ptr<CSTXListControlExItem> pSubItem = pItem->m_arrChildItems[iSubItemIndex];
 
 	pSubItem->m_iMarkImage = 1;		//Busy
 	return iSubItemIndex;
@@ -2324,12 +2324,12 @@ INT_PTR CSTXListControlEx::SetSubItemAway(INT_PTR iItemIndex, INT_PTR iSubItemIn
 	if(iItemIndex < 0 || iItemIndex > m_arrItems.GetCount() - 1)
 		return -1;
 
-	tr1::shared_ptr<CSTXListControlExItem> pItem = m_arrItems[iItemIndex];
+	shared_ptr<CSTXListControlExItem> pItem = m_arrItems[iItemIndex];
 
 	if(iSubItemIndex < 0 || iSubItemIndex > pItem->m_arrChildItems.GetCount() - 1)
 		return -1;
 
-	tr1::shared_ptr<CSTXListControlExItem> pSubItem = pItem->m_arrChildItems[iSubItemIndex];
+	shared_ptr<CSTXListControlExItem> pSubItem = pItem->m_arrChildItems[iSubItemIndex];
 
 	pSubItem->m_iMarkImage = 2;		//Away
 	return iSubItemIndex;
@@ -2341,12 +2341,12 @@ INT_PTR CSTXListControlEx::ClearSubItemMark(INT_PTR iItemIndex, INT_PTR iSubItem
 	if(iItemIndex < 0 || iItemIndex > m_arrItems.GetCount() - 1)
 		return -1;
 
-	tr1::shared_ptr<CSTXListControlExItem> pItem = m_arrItems[iItemIndex];
+	shared_ptr<CSTXListControlExItem> pItem = m_arrItems[iItemIndex];
 
 	if(iSubItemIndex < 0 || iSubItemIndex > pItem->m_arrChildItems.GetCount() - 1)
 		return -1;
 
-	tr1::shared_ptr<CSTXListControlExItem> pSubItem = pItem->m_arrChildItems[iSubItemIndex];
+	shared_ptr<CSTXListControlExItem> pSubItem = pItem->m_arrChildItems[iSubItemIndex];
 
 	pSubItem->m_iMarkImage = -1;
 	return iSubItemIndex;
@@ -2357,12 +2357,12 @@ INT_PTR CSTXListControlEx::SetSubItemImageGray(INT_PTR iItemIndex, INT_PTR iSubI
 	if(iItemIndex < 0 || iItemIndex > m_arrItems.GetCount() - 1)
 		return -1;
 
-	tr1::shared_ptr<CSTXListControlExItem> pItem = m_arrItems[iItemIndex];
+	shared_ptr<CSTXListControlExItem> pItem = m_arrItems[iItemIndex];
 
 	if(iSubItemIndex < 0 || iSubItemIndex > pItem->m_arrChildItems.GetCount() - 1)
 		return -1;
 
-	tr1::shared_ptr<CSTXListControlExItem> pSubItem = pItem->m_arrChildItems[iSubItemIndex];
+	shared_ptr<CSTXListControlExItem> pSubItem = pItem->m_arrChildItems[iSubItemIndex];
 
 	pSubItem->UseGrayImage(bGray);
 	return iSubItemIndex;
@@ -2373,12 +2373,12 @@ HRESULT CSTXListControlEx::SetSubItemImage( INT_PTR iItemIndex, INT_PTR iSubItem
 	if(iItemIndex < 0 || iItemIndex > m_arrItems.GetCount() - 1)
 		return E_FAIL;
 
-	tr1::shared_ptr<CSTXListControlExItem> pItem = m_arrItems[iItemIndex];
+	shared_ptr<CSTXListControlExItem> pItem = m_arrItems[iItemIndex];
 
 	if(iSubItemIndex < 0 || iSubItemIndex > pItem->m_arrChildItems.GetCount() - 1)
 		return E_FAIL;
 
-	tr1::shared_ptr<CSTXListControlExItem> pSubItem = pItem->m_arrChildItems[iSubItemIndex];
+	shared_ptr<CSTXListControlExItem> pSubItem = pItem->m_arrChildItems[iSubItemIndex];
 
 	HRESULT hr = S_OK;
 
@@ -2395,12 +2395,12 @@ INT_PTR CSTXListControlEx::SetSubItemCaption( INT_PTR iItemIndex, INT_PTR iSubIt
 	if(iItemIndex < 0 || iItemIndex > m_arrItems.GetCount() - 1)
 		return -1;
 
-	tr1::shared_ptr<CSTXListControlExItem> pItem = m_arrItems[iItemIndex];
+	shared_ptr<CSTXListControlExItem> pItem = m_arrItems[iItemIndex];
 
 	if(iSubItemIndex < 0 || iSubItemIndex > pItem->m_arrChildItems.GetCount() - 1)
 		return -1;
 
-	tr1::shared_ptr<CSTXListControlExItem> pSubItem = pItem->m_arrChildItems[iSubItemIndex];
+	shared_ptr<CSTXListControlExItem> pSubItem = pItem->m_arrChildItems[iSubItemIndex];
 	if(bSubCaption)
 		pSubItem->m_strSubCaption = lpszCaption;
 	else
@@ -2414,11 +2414,11 @@ void CSTXListControlEx::DeleteAllItems()
 {
 	m_iFocusItemIndex = -1;
 	m_iFocusSubItemIndex = -1;
-	m_pFocusedItem = std::tr1::shared_ptr<CSTXListControlExItem>();	//NULL
+	m_pFocusedItem = std::shared_ptr<CSTXListControlExItem>();	//NULL
 
-	m_pLastLMouseDownItem = std::tr1::shared_ptr<CSTXListControlExItem>();	//NULL
-	m_pLastRMouseDownItem = std::tr1::shared_ptr<CSTXListControlExItem>();	//NULL
-	m_pLastHoverItem = std::tr1::shared_ptr<CSTXListControlExItem>();	//NULL
+	m_pLastLMouseDownItem = std::shared_ptr<CSTXListControlExItem>();	//NULL
+	m_pLastRMouseDownItem = std::shared_ptr<CSTXListControlExItem>();	//NULL
+	m_pLastHoverItem = std::shared_ptr<CSTXListControlExItem>();	//NULL
 
 	m_arrItems.RemoveAll();
 	Invalidate();
@@ -2430,10 +2430,10 @@ HRESULT CSTXListControlEx::SetBackgroundImage( LPCTSTR lpszFile )
 	CRect rcThis;
 	GetClientRect(rcThis);
 
-	m_pImgBackground = std::tr1::shared_ptr<Gdiplus::Image>();	//NULL
-	tr1::shared_ptr<Gdiplus::Image> img(new Gdiplus::Image(lpszFile));
+	m_pImgBackground = std::shared_ptr<Gdiplus::Image>();	//NULL
+	shared_ptr<Gdiplus::Image> img(new Gdiplus::Image(lpszFile));
 	m_pImgBackground = img;
-	m_pImgBackgroundCached = std::tr1::shared_ptr<Gdiplus::CachedBitmap>();	//NULL
+	m_pImgBackgroundCached = std::shared_ptr<Gdiplus::CachedBitmap>();	//NULL
 
 	if(SUCCEEDED(hr))
 	{
@@ -2446,28 +2446,28 @@ HRESULT CSTXListControlEx::SetBackgroundImage( LPCTSTR lpszFile )
 /*
 HRESULT CSTXListControlEx::SetBusyImage(HBITMAP hBitmap)
 {
-	tr1::shared_ptr<Gdiplus::Image> img(new Gdiplus::Bitmap(hBitmap, NULL));
+	shared_ptr<Gdiplus::Image> img(new Gdiplus::Bitmap(hBitmap, NULL));
 	m_pImgBusy = img;
 	return S_OK;
 }
 
 HRESULT CSTXListControlEx::SetBusyImage(IStream *pStream)
 {
-	tr1::shared_ptr<Gdiplus::Image> img(new Gdiplus::Image(pStream));
+	shared_ptr<Gdiplus::Image> img(new Gdiplus::Image(pStream));
 	m_pImgBusy = img;
 	return S_OK;
 }
 
 HRESULT CSTXListControlEx::SetAwayImage(HBITMAP hBitmap)
 {
-	tr1::shared_ptr<Gdiplus::Image> img(new Gdiplus::Bitmap(hBitmap, NULL));
+	shared_ptr<Gdiplus::Image> img(new Gdiplus::Bitmap(hBitmap, NULL));
 	m_pImgAway = img;
 	return S_OK;
 }
 
 HRESULT CSTXListControlEx::SetAwayImage(IStream *pStream)
 {
-	tr1::shared_ptr<Gdiplus::Image> img(new Gdiplus::Image(pStream));
+	shared_ptr<Gdiplus::Image> img(new Gdiplus::Image(pStream));
 	m_pImgAway = img;
 	return S_OK;
 }
@@ -2479,10 +2479,10 @@ HRESULT CSTXListControlEx::SetBackgroundImage( HBITMAP hBitmap )
 	CRect rcThis;
 	GetClientRect(rcThis);
 
-	m_pImgBackground = std::tr1::shared_ptr<Gdiplus::Image>();	//NULL
-	tr1::shared_ptr<Gdiplus::Image> img(new Gdiplus::Bitmap(hBitmap, NULL));
+	m_pImgBackground = std::shared_ptr<Gdiplus::Image>();	//NULL
+	shared_ptr<Gdiplus::Image> img(new Gdiplus::Bitmap(hBitmap, NULL));
 	m_pImgBackground = img;
-	m_pImgBackgroundCached = std::tr1::shared_ptr<Gdiplus::CachedBitmap>();	//NULL
+	m_pImgBackgroundCached = std::shared_ptr<Gdiplus::CachedBitmap>();	//NULL
 
 	if(SUCCEEDED(hr))
 	{
@@ -2498,9 +2498,9 @@ HRESULT CSTXListControlEx::SetBackgroundImage( IStream *pStream)
 	CRect rcThis;
 	GetClientRect(rcThis);
 
-	tr1::shared_ptr<Gdiplus::Image> img(new Gdiplus::Image(pStream));
+	shared_ptr<Gdiplus::Image> img(new Gdiplus::Image(pStream));
 	m_pImgBackground = img;
-	m_pImgBackgroundCached = std::tr1::shared_ptr<Gdiplus::CachedBitmap>();	//NULL
+	m_pImgBackgroundCached = std::shared_ptr<Gdiplus::CachedBitmap>();	//NULL
 
 	if(SUCCEEDED(hr))
 	{
@@ -2515,12 +2515,12 @@ INT_PTR CSTXListControlEx::SetSubItemData( INT_PTR iItemIndex, INT_PTR iSubItemI
 	if(iItemIndex < 0 || iItemIndex > m_arrItems.GetCount() - 1)
 		return -1;
 
-	tr1::shared_ptr<CSTXListControlExItem> pItem = m_arrItems[iItemIndex];
+	shared_ptr<CSTXListControlExItem> pItem = m_arrItems[iItemIndex];
 
 	if(iSubItemIndex < 0 || iSubItemIndex > pItem->m_arrChildItems.GetCount() - 1)
 		return -1;
 
-	tr1::shared_ptr<CSTXListControlExItem> pSubItem = pItem->m_arrChildItems[iSubItemIndex];
+	shared_ptr<CSTXListControlExItem> pSubItem = pItem->m_arrChildItems[iSubItemIndex];
 	pSubItem->m_dwItemData = dwItemData;
 
 	return iSubItemIndex;
@@ -2531,12 +2531,12 @@ DWORD_PTR CSTXListControlEx::GetSubItemData( INT_PTR iItemIndex, INT_PTR iSubIte
 	if(iItemIndex < 0 || iItemIndex > m_arrItems.GetCount() - 1)
 		return 0;
 
-	tr1::shared_ptr<CSTXListControlExItem> pItem = m_arrItems[iItemIndex];
+	shared_ptr<CSTXListControlExItem> pItem = m_arrItems[iItemIndex];
 
 	if(iSubItemIndex < 0 || iSubItemIndex > pItem->m_arrChildItems.GetCount() - 1)
 		return 0;
 
-	tr1::shared_ptr<CSTXListControlExItem> pSubItem = pItem->m_arrChildItems[iSubItemIndex];
+	shared_ptr<CSTXListControlExItem> pSubItem = pItem->m_arrChildItems[iSubItemIndex];
 	return pSubItem->m_dwItemData;
 }
 
@@ -2545,7 +2545,7 @@ INT_PTR CSTXListControlEx::SetItemCaption( INT_PTR iItemIndex, LPCTSTR lpszCapti
 	if(iItemIndex < 0 || iItemIndex > m_arrItems.GetCount() - 1)
 		return -1;
 
-	tr1::shared_ptr<CSTXListControlExItem> pItem = m_arrItems[iItemIndex];
+	shared_ptr<CSTXListControlExItem> pItem = m_arrItems[iItemIndex];
 	if(bSubCaption)
 		pItem->m_strSubCaption = lpszCaption;
 	else
@@ -2570,7 +2570,7 @@ void CSTXListControlEx::OnLButtonDblClk(UINT nFlags, CPoint point)
 	INT_PTR iHit = ItemHitTest(point, &bInHeader);
 	if(iHit != -1)
 	{
-		std::tr1::shared_ptr<CSTXListControlExItem> pHitNow = m_arrItems[iHit];
+		std::shared_ptr<CSTXListControlExItem> pHitNow = m_arrItems[iHit];
 		INT_PTR iHitSubItem = SubItemHitTest(iHit, point);
 		if(iHitSubItem != -1)
 			pHitNow = m_arrItems[iHit]->m_arrChildItems[iHitSubItem];
@@ -2742,7 +2742,7 @@ void CSTXListControlEx::OnSpaceKeyDown()
 	}
 }
 
-void CSTXListControlEx::InternalEnsureVisible( tr1::shared_ptr<CSTXListControlExItem> pItemEx )
+void CSTXListControlEx::InternalEnsureVisible( shared_ptr<CSTXListControlExItem> pItemEx )
 {
 	if(pItemEx == NULL)
 		return;
@@ -2799,7 +2799,7 @@ INT_PTR CSTXListControlEx::GetSubItemCount( INT_PTR iItemIndex )
 	if(iItemIndex < 0 || iItemIndex > m_arrItems.GetCount() - 1)
 		return 0;
 
-	tr1::shared_ptr<CSTXListControlExItem> pItem = m_arrItems[iItemIndex];
+	shared_ptr<CSTXListControlExItem> pItem = m_arrItems[iItemIndex];
 	return pItem->m_arrChildItems.GetCount();
 }
 
@@ -2844,7 +2844,7 @@ void CSTXListControlEx::SetGlobalUseGrayImage(BOOL bGray)
 	Invalidate();
 }
 
-void CSTXListControlEx::OnBeginDrag(std::tr1::shared_ptr<CSTXListControlExItem> pDragItem)
+void CSTXListControlEx::OnBeginDrag(std::shared_ptr<CSTXListControlExItem> pDragItem)
 {
 	//Do something in derived class
 }
@@ -2860,7 +2860,7 @@ INT_PTR CSTXListControlEx::SetItemTag1(INT_PTR iItemIndex, LPCTSTR lpszTag)
 	if(iItemIndex < 0 || iItemIndex > m_arrItems.GetCount() - 1)
 		return -1;
 
-	std::tr1::shared_ptr<CSTXListControlExItem> pItem = m_arrItems[iItemIndex];
+	std::shared_ptr<CSTXListControlExItem> pItem = m_arrItems[iItemIndex];
 	pItem->m_strTag1 = lpszTag;
 
 	return iItemIndex;
@@ -2872,7 +2872,7 @@ INT_PTR CSTXListControlEx::FindItemWithTag1(LPCTSTR lpszTag, BOOL bCaseSensitive
 	{
 		for(INT_PTR i=0;i<m_arrItems.GetCount();i++)
 		{
-			std::tr1::shared_ptr<CSTXListControlExItem> pItem = m_arrItems[i];
+			std::shared_ptr<CSTXListControlExItem> pItem = m_arrItems[i];
 			if(_tcscmp(pItem->m_strTag1, lpszTag) == 0)
 			{
 				return i;
@@ -2883,7 +2883,7 @@ INT_PTR CSTXListControlEx::FindItemWithTag1(LPCTSTR lpszTag, BOOL bCaseSensitive
 	{
 		for(INT_PTR i=0;i<m_arrItems.GetCount();i++)
 		{
-			std::tr1::shared_ptr<CSTXListControlExItem> pItem = m_arrItems[i];
+			std::shared_ptr<CSTXListControlExItem> pItem = m_arrItems[i];
 			if(_tcsicmp(pItem->m_strTag1, lpszTag) == 0)
 			{
 				return i;
@@ -2899,7 +2899,7 @@ INT_PTR CSTXListControlEx::DeleteAllSubItems( INT_PTR iItemIndex )
 	if(iItemIndex < 0 || iItemIndex > m_arrItems.GetCount() - 1)
 		return -1;
 
-	std::tr1::shared_ptr<CSTXListControlExItem> pItem = m_arrItems[iItemIndex];
+	std::shared_ptr<CSTXListControlExItem> pItem = m_arrItems[iItemIndex];
 
 	INT_PTR nSubItems = pItem->GetSubItemCount();
 
@@ -2917,7 +2917,7 @@ INT_PTR CSTXListControlEx::SetItemCaptionColor( INT_PTR iItemIndex, COLORREF clr
 	if(iItemIndex < 0 || iItemIndex > m_arrItems.GetCount() - 1)
 		return -1;
 
-	std::tr1::shared_ptr<CSTXListControlExItem> pItem = m_arrItems[iItemIndex];
+	std::shared_ptr<CSTXListControlExItem> pItem = m_arrItems[iItemIndex];
 
 	pItem->m_clrMainCaptionColor = clrColor;
 
@@ -2932,12 +2932,12 @@ INT_PTR CSTXListControlEx::SetSubItemCaptionColor( INT_PTR iItemIndex, INT_PTR i
 	if(iItemIndex < 0 || iItemIndex > m_arrItems.GetCount() - 1)
 		return -1;
 
-	tr1::shared_ptr<CSTXListControlExItem> pItem = m_arrItems[iItemIndex];
+	shared_ptr<CSTXListControlExItem> pItem = m_arrItems[iItemIndex];
 
 	if(iSubItemIndex < 0 || iSubItemIndex > pItem->m_arrChildItems.GetCount() - 1)
 		return -1;
 
-	tr1::shared_ptr<CSTXListControlExItem> pSubItem = pItem->m_arrChildItems[iSubItemIndex];
+	shared_ptr<CSTXListControlExItem> pSubItem = pItem->m_arrChildItems[iSubItemIndex];
 
 	pSubItem->m_clrMainCaptionColor = clrColor;
 
@@ -2952,12 +2952,12 @@ INT_PTR CSTXListControlEx::SetSubItemSubCaptionColor( INT_PTR iItemIndex, INT_PT
 	if(iItemIndex < 0 || iItemIndex > m_arrItems.GetCount() - 1)
 		return -1;
 
-	tr1::shared_ptr<CSTXListControlExItem> pItem = m_arrItems[iItemIndex];
+	shared_ptr<CSTXListControlExItem> pItem = m_arrItems[iItemIndex];
 
 	if(iSubItemIndex < 0 || iSubItemIndex > pItem->m_arrChildItems.GetCount() - 1)
 		return -1;
 
-	tr1::shared_ptr<CSTXListControlExItem> pSubItem = pItem->m_arrChildItems[iSubItemIndex];
+	shared_ptr<CSTXListControlExItem> pSubItem = pItem->m_arrChildItems[iSubItemIndex];
 
 	pSubItem->m_clrSubCaptionColor = clrColor;
 
@@ -2972,7 +2972,7 @@ INT_PTR CSTXListControlEx::ExcludeItemFromFindSubItem( INT_PTR iItemIndex, BOOL 
 	if(iItemIndex < 0 || iItemIndex > m_arrItems.GetCount() - 1)
 		return -1;
 
-	tr1::shared_ptr<CSTXListControlExItem> pItem = m_arrItems[iItemIndex];
+	shared_ptr<CSTXListControlExItem> pItem = m_arrItems[iItemIndex];
 
 	pItem->m_bExcludeFromFindSubItem = bExclude;
 	return iItemIndex;
@@ -3005,25 +3005,25 @@ INT_PTR CSTXListControlEx::SetSubImage( INT_PTR iImageIndex, LPCTSTR lpszFile )
 	return iImageIndex;
 }
 
-std::tr1::shared_ptr<Gdiplus::Image> CSTXListControlEx::GetResizedImage( IStream *pStream, int nWidthHeight )
+std::shared_ptr<Gdiplus::Image> CSTXListControlEx::GetResizedImage( IStream *pStream, int nWidthHeight )
 {
-	tr1::shared_ptr<Gdiplus::Image> img(new Gdiplus::Bitmap(pStream));
+	shared_ptr<Gdiplus::Image> img(new Gdiplus::Bitmap(pStream));
 	return GetResizedImage(img, nWidthHeight);
 }
 
-std::tr1::shared_ptr<Gdiplus::Image> CSTXListControlEx::GetResizedImage( HBITMAP hBitmap, int nWidthHeight )
+std::shared_ptr<Gdiplus::Image> CSTXListControlEx::GetResizedImage( HBITMAP hBitmap, int nWidthHeight )
 {
-	tr1::shared_ptr<Gdiplus::Image> img(new Gdiplus::Bitmap(hBitmap, NULL));
+	shared_ptr<Gdiplus::Image> img(new Gdiplus::Bitmap(hBitmap, NULL));
 	return GetResizedImage(img, nWidthHeight);
 }
 
-std::tr1::shared_ptr<Gdiplus::Image> CSTXListControlEx::GetResizedImage( LPCTSTR lpszFile, int nWidthHeight )
+std::shared_ptr<Gdiplus::Image> CSTXListControlEx::GetResizedImage( LPCTSTR lpszFile, int nWidthHeight )
 {
-	tr1::shared_ptr<Gdiplus::Image> img(new Gdiplus::Image(lpszFile));
+	shared_ptr<Gdiplus::Image> img(new Gdiplus::Image(lpszFile));
 	return GetResizedImage(img, nWidthHeight);
 }
 
-std::tr1::shared_ptr<Gdiplus::Image> CSTXListControlEx::GetResizedImage( std::tr1::shared_ptr<Gdiplus::Image> pImage, int nWidthHeight )
+std::shared_ptr<Gdiplus::Image> CSTXListControlEx::GetResizedImage( std::shared_ptr<Gdiplus::Image> pImage, int nWidthHeight )
 {
 	UINT o_height = pImage->GetHeight();
 	UINT o_width = pImage->GetWidth();
@@ -3043,7 +3043,7 @@ std::tr1::shared_ptr<Gdiplus::Image> CSTXListControlEx::GetResizedImage( std::tr
 			n_width = static_cast<UINT>(n_height * ratio);
 		}
 
-		tr1::shared_ptr<Gdiplus::Image> imgThumbnail(pImage->GetThumbnailImage(n_width, n_height));
+		shared_ptr<Gdiplus::Image> imgThumbnail(pImage->GetThumbnailImage(n_width, n_height));
 		return imgThumbnail;
 	}
 	else
@@ -3057,12 +3057,12 @@ INT_PTR CSTXListControlEx::SetSubItemSubImageIndex(INT_PTR iItemIndex, INT_PTR i
 	if(iItemIndex < 0 || iItemIndex > m_arrItems.GetCount() - 1)
 		return -1;
 
-	tr1::shared_ptr<CSTXListControlExItem> pItem = m_arrItems[iItemIndex];
+	shared_ptr<CSTXListControlExItem> pItem = m_arrItems[iItemIndex];
 
 	if(iSubItemIndex < 0 || iSubItemIndex > pItem->m_arrChildItems.GetCount() - 1)
 		return -1;
 
-	tr1::shared_ptr<CSTXListControlExItem> pSubItem = pItem->m_arrChildItems[iSubItemIndex];
+	shared_ptr<CSTXListControlExItem> pSubItem = pItem->m_arrChildItems[iSubItemIndex];
 
 	ASSERT(iImageIndex <= m_arrSubMarkImages.GetUpperBound());
 	pSubItem->m_iMarkImage = iImageIndex;
@@ -3084,9 +3084,9 @@ INT_PTR CSTXListControlEx::AddItemButton( INT_PTR iItemIndex, IStream *pStreamIm
 	if(iItemIndex < 0 || iItemIndex > m_arrItems.GetCount() - 1)
 		return -1;
 
-	tr1::shared_ptr<CSTXListControlExItem> pItem = m_arrItems[iItemIndex];
+	shared_ptr<CSTXListControlExItem> pItem = m_arrItems[iItemIndex];
 
-	tr1::shared_ptr<CSTXListControlExButton> pBtn(new CSTXListControlExButton(pItem.get(), pStreamImage, lpszToolTips));
+	shared_ptr<CSTXListControlExButton> pBtn(new CSTXListControlExButton(pItem.get(), pStreamImage, lpszToolTips));
 	pBtn->m_iOffset = -DEFAULT_BUTTON_WIDTH;
 
 	//Adjust offset of existing buttons
@@ -3109,14 +3109,14 @@ INT_PTR CSTXListControlEx::AddSubItemButton( INT_PTR iItemIndex, INT_PTR iSubIte
 	if(iItemIndex < 0 || iItemIndex > m_arrItems.GetCount() - 1)
 		return -1;
 
-	tr1::shared_ptr<CSTXListControlExItem> pItem = m_arrItems[iItemIndex];
+	shared_ptr<CSTXListControlExItem> pItem = m_arrItems[iItemIndex];
 
 	if(iSubItemIndex < 0 || iSubItemIndex > pItem->m_arrChildItems.GetCount() - 1)
 		return -1;
 
-	tr1::shared_ptr<CSTXListControlExItem> pSubItem = pItem->m_arrChildItems[iSubItemIndex];
+	shared_ptr<CSTXListControlExItem> pSubItem = pItem->m_arrChildItems[iSubItemIndex];
 
-	tr1::shared_ptr<CSTXListControlExButton> pBtn(new CSTXListControlExButton(pSubItem.get(), pStreamImage, lpszToolTips));
+	shared_ptr<CSTXListControlExButton> pBtn(new CSTXListControlExButton(pSubItem.get(), pStreamImage, lpszToolTips));
 	pBtn->m_iOffset = -DEFAULT_BUTTON_WIDTH;
 
 	//Adjust offset of existing buttons
@@ -3138,7 +3138,7 @@ CString CSTXListControlEx::GetItemTag1( INT_PTR iItemIndex )
 	if(iItemIndex < 0 || iItemIndex > m_arrItems.GetCount() - 1)
 		return _T("");
 
-	tr1::shared_ptr<CSTXListControlExItem> pItem = m_arrItems[iItemIndex];
+	shared_ptr<CSTXListControlExItem> pItem = m_arrItems[iItemIndex];
 
 	return pItem->m_strTag1;
 }
@@ -3148,7 +3148,7 @@ CString CSTXListControlEx::GetItemTag2( INT_PTR iItemIndex )
 	if(iItemIndex < 0 || iItemIndex > m_arrItems.GetCount() - 1)
 		return _T("");
 
-	tr1::shared_ptr<CSTXListControlExItem> pItem = m_arrItems[iItemIndex];
+	shared_ptr<CSTXListControlExItem> pItem = m_arrItems[iItemIndex];
 
 	return pItem->m_strTag2;
 }
@@ -3158,12 +3158,12 @@ INT_PTR CSTXListControlEx::GetSubItemButtonCount( INT_PTR iItemIndex, INT_PTR iS
 	if(iItemIndex < 0 || iItemIndex > m_arrItems.GetCount() - 1)
 		return 0;
 
-	tr1::shared_ptr<CSTXListControlExItem> pItem = m_arrItems[iItemIndex];
+	shared_ptr<CSTXListControlExItem> pItem = m_arrItems[iItemIndex];
 
 	if(iSubItemIndex < 0 || iSubItemIndex > pItem->m_arrChildItems.GetCount() - 1)
 		return 0;
 
-	tr1::shared_ptr<CSTXListControlExItem> pSubItem = pItem->m_arrChildItems[iSubItemIndex];
+	shared_ptr<CSTXListControlExItem> pSubItem = pItem->m_arrChildItems[iSubItemIndex];
 
 	return pSubItem->m_arrButtons.GetCount();
 }
@@ -3182,7 +3182,7 @@ void CSTXListControlEx::DrawBackground( Gdiplus::Graphics *pGraphics )
 			graphics.DrawImage(m_pImgBackground.get(), 0, 0, rcThis.Width(), rcThis.Height());
 
 			Gdiplus::Bitmap *pBitmapSrc = pBitmap;
-			tr1::shared_ptr<Gdiplus::CachedBitmap> imgCached(new Gdiplus::CachedBitmap(pBitmapSrc, pGraphics));
+			shared_ptr<Gdiplus::CachedBitmap> imgCached(new Gdiplus::CachedBitmap(pBitmapSrc, pGraphics));
 			m_pImgBackgroundCached = imgCached;
 
 			delete pBitmap;
@@ -3215,10 +3215,10 @@ void CSTXListControlEx::SetSubItemLeftPadding( int nPadding )
 	DOUBLE fPadding = m_vSubItemLeftSpacing.GetValue();		//Activated
 	for(INT_PTR i=0;i<m_arrItems.GetCount();i++)
 	{
-		tr1::shared_ptr<CSTXListControlExItem> pItem = m_arrItems[i];
+		shared_ptr<CSTXListControlExItem> pItem = m_arrItems[i];
 		for(INT_PTR k=0;k<pItem->m_arrChildItems.GetCount();k++)
 		{
-			tr1::shared_ptr<CSTXListControlExItem> pSubItem = pItem->m_arrChildItems[k];
+			shared_ptr<CSTXListControlExItem> pSubItem = pItem->m_arrChildItems[k];
 			pSubItem->m_iLeftPadding = fPadding;
 		}
 	}

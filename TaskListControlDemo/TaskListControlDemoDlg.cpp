@@ -125,6 +125,7 @@ BEGIN_MESSAGE_MAP(CTaskListControlDemoDlg, CDialogEx)
 	ON_NOTIFY(STXALN_ITEMCLICK, 100, &CTaskListControlDemoDlg::OnListItemClick)
 	ON_NOTIFY(STXALN_ITEMDBLCLICK, 100, &CTaskListControlDemoDlg::OnListItemDblClick)
 	ON_WM_TIMER()
+	ON_WM_SIZE()
 END_MESSAGE_MAP()
 
 
@@ -161,8 +162,10 @@ BOOL CTaskListControlDemoDlg::OnInitDialog()
 
 	// TODO: Add extra initialization here
 	srand((unsigned int)time(NULL));
-
-	m_list.Create(_T("ABCDEF"), WS_CHILD | WS_VISIBLE | WS_TABSTOP | WS_BORDER, CRect(0, 0, 240, 360), this, 100);
+	
+	CRect rcClient;
+	GetClientRect(rcClient);
+	m_list.Create(_T("MyList"), WS_CHILD | WS_VISIBLE | WS_TABSTOP | WS_BORDER, rcClient, this, 100);
 
 	CComPtr<IStream> spImage1 = LoadImageFromResource(AfxGetApp()->m_hInstance, MAKEINTRESOURCE(IDB_PNG1), _T("PNG"));
 	CComPtr<IStream> spImage2 = LoadImageFromResource(AfxGetApp()->m_hInstance, MAKEINTRESOURCE(IDB_PNG2), _T("PNG"));
@@ -290,4 +293,15 @@ void CTaskListControlDemoDlg::OnTimer(UINT_PTR nIDEvent)
 	}
 
 	CDialogEx::OnTimer(nIDEvent);
+}
+
+
+void CTaskListControlDemoDlg::OnSize(UINT nType, int cx, int cy)
+{
+	CDialogEx::OnSize(nType, cx, cy);
+
+	if (m_list.GetSafeHwnd())
+	{
+		m_list.MoveWindow(CRect(0, 0, cx, cy));
+	}
 }
